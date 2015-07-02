@@ -18,16 +18,24 @@ println("MUFFIN initialisation")
         if dataobj == "m31"
             psf = "data/meerkat_m30_25pix.psf.fits"
             obj = "data/M31.fits"
+            tmp = string(Pkg.dir("Muffin"))
+            psf = string(tmp,tmp[1],psf)
+            obj = string(tmp,tmp[1],obj)
         elseif dataobj == "andro"
             psf = "data/meerkat_m30_25pix.psf.fits"
             obj = "data/andro.fits"
+            tmp = string(Pkg.dir("Muffin"))
+            psf = string(tmp,tmp[1],psf)
+            obj = string(tmp,tmp[1],obj)
         elseif dataobj == "2gauss"
             psf = "data/meerkat_m30_25pix.psf.fits"
             obj = "data/2gauss.fits"
+            tmp = string(Pkg.dir("Muffin"))
+            psf = string(tmp,tmp[1],psf)
+            obj = string(tmp,tmp[1],obj)
         elseif dataobj == "chiara"
             psf = "/home/deguignet/Julia/example_sim_psf.fits"
             obj = "/home/deguignet/Julia/example_sim_dirty.fits"
-
         elseif isempty(folder)
             tmp = pwd()
             psf = string(tmp,tmp[1],datapsf)
