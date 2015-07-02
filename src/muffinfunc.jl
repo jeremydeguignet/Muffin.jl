@@ -145,12 +145,21 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
     loop = true
 
+    println("")
+    println("                                =======================                                ")
+    println("                               | MUFFIN RECONSTRUCTION |                               ")
+
+    println("========================================================================================")
+    println("ADMM"," ","|"," ","||x - xm||"," ","|"," ","||x - xp||"," ","|"," ",
+            "||Hx - t||"," ","|"," ","||x - s||"," "," |"," ","||sh - v||"," ","|"," ","     time      |")
+    println("========================================================================================")
     tic()
         while loop
             tic()
             niter +=1
-            println("")
-            println("ADMM iteration: $niter")
+            println("    "," ","|"," ","          "," ","|"," ","          "," ","|"," ",
+                    "          "," ","|"," ","         "," "," |"," ","          "," ","|"," ")
+            # println("ADMM iteration: $niter")
 
             ##############################
             ########## update x ##########
@@ -225,14 +234,29 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             admmst.xmm[:] = admmst.x
 
+            #
+            # println("ADMM"," ","|"," ","||x - xm||"," ","|"," ","||x - xp||"," ","|"," ",
+            #         "||Hx - t||"," ","|"," ","||x - s||"," ","|"," ","||sh - v||"," ","|"," ","time")
+            # println(niter," ","|"," ",toolst.tol1[niter]," ","|"," ",toolst.tol2[niter]," ","|"," ",
+            #         toolst.tol3[niter]," ","|"," ",toolst.tol4[niter]," ","|"," ",toolst.tol5[niter]," ","|"," ",toq())
 
-            @printf("| - error ||x - xm||: %02.04e \n", toolst.tol1[niter])
-            @printf("| - error ||x - xp||: %02.04e \n", toolst.tol2[niter])
-            @printf("| - error ||Hx - t||: %02.04e \n", toolst.tol3[niter])
-            @printf("| - error ||x - s||: %02.04e \n", toolst.tol4[niter])
-            @printf("| - error ||sh - v||: %02.04e \n", toolst.tol5[niter])
 
-            @printf("time for iteration : %f seconds \n", toq())
+
+            @printf("%03d  | ", niter)
+            @printf("%02.04e | ", toolst.tol1[niter])
+            @printf("%02.04e | ", toolst.tol2[niter])
+            @printf("%02.04e | ", toolst.tol3[niter])
+            @printf("%02.04e | ", toolst.tol4[niter])
+            @printf("%02.04e | ", toolst.tol5[niter])
+            @printf("%f seconds  \n", toq())
+
+            # @printf("| - error ||x - xm||: %02.04e \n", toolst.tol1[niter])
+            # @printf("| - error ||x - xp||: %02.04e \n", toolst.tol2[niter])
+            # @printf("| - error ||Hx - t||: %02.04e \n", toolst.tol3[niter])
+            # @printf("| - error ||x - s||: %02.04e \n", toolst.tol4[niter])
+            # @printf("| - error ||sh - v||: %02.04e \n", toolst.tol5[niter])
+            #
+            # @printf("time for iteration : %f seconds \n", toq())
 
         end
     println("")
@@ -409,8 +433,16 @@ end
 
 #################################
 ###### proximity operators ######
+# function prox_u(u::Array,μ::Float64)
+#     return max(0, 1-μ./abs(u)).*u
+# end
+
 function prox_u(u::Array,μ::Float64)
-    return max(0, 1-μ./abs(u)).*u
+	res=zeros(size(u));
+	x=u;
+	ind = (abs(x).>(.75*μ^(2/3))) ;
+	res[ind]= 2/3*x[ind].*(1+cos(2*pi/3-2/3*acos(μ/8*(abs(x[ind])/3).^(-3/2)))) ;
+   return res
 end
 
 #################################

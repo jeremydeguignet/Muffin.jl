@@ -1,31 +1,24 @@
 using HDF5, JLD
 using PyPlot
-# include("testobj.jl");
 
-# file = string("/home/jeremy/.julia/v0.3/Muffin/data/test300515.jld")
+file = "test.jld"
 
-# file = string("/Users/deguignet/Documents/Git/Rec3d/data/results/result_1000iter_m31.jld")
-# file = string("/Users/deguignet/Documents/Julia/result_chiara_32f_2048p.jld")
-file = string("test.jld")
 admmst = load(file,"admmst")
 x = admmst.x
 lastiter = load(file, "algost.lastiter")
 nfreq = load(file, "algost.nfreq")
-# errorrec = load(file, "toolst.errorrec")
-# errorest = load(file, "toolst.errorest")
-# errorraw = load(file, "toolst.errorraw")
-#err = load(file, "toolst.err")
+
 tol1 = load(file, "toolst.tol1")
 tol2 = load(file, "toolst.tol2")
-#tol3 = load(file, "toolst.tol3")
+tol3 = load(file, "toolst.tol3")
 tol4 = load(file, "toolst.tol4")
 tol5 = load(file, "toolst.tol5")
 mydata = load(file, "skyst.mydata")
 sky = load(file, "skyst.sky")
-# snr = load(file, "toolst.snr")
+
 nu = load(file, "psfst.nu")
 nu0 = load(file, "psfst.nu0")
-# noise = load(file,"skyst.noise")
+
 
 d = size(x)[1]
 if isodd(size(x)[1]) == true
@@ -33,28 +26,6 @@ if isodd(size(x)[1]) == true
 else d12 = d/2
 end
 
-
-#############################
-# nw = 11
-# nu = zeros(Float64,nw)
-#
-# for i = 1:nw
-#     nu[i] = 1.025e9 + (i-1)*50e6
-# end
-# nxy = size(x)[1]
-
-# nfreq = 32
-# nustart = 9.85e8
-# nustep = 2e6
-#
-# nu = zeros(Float64,nfreq)
-# for i in 1:nfreq
-#     nu[i] = nustart + (i-1)*nustep
-# end
-# nu0 = (nu[1] + nu[nfreq])/2
-# nxy  = size(x)[1]
-##############################
-# imshow(rand(20,20),cmap=ColorMap("ocean"))
 #############################################################################
 #############################################################################
 
@@ -63,61 +34,61 @@ include("alpha_rec.jl")
 #############################################################################
 #############################################################################
 ######################################   Objet reconstruit
-figure(1)
-clf()
-title("Reconstructed object")
-e = 0
-for z in [1 5 10 15]
-    e += 1
-    subplot(2,2,e)
-    a = nu[z]/1e9
-    axis("off")
-    imshow(x[:,:,z],vmin=0,vmax=0.9)
-    title("v = $a[z] GHz")
-end
-subplots_adjust(bottom=0.1, right=0.8, top=0.95)
-cax = axes([0.85, 0.1, 0.025, 0.8])
-colorbar(cax=cax)
+# figure(1)
+# clf()
+# title("Reconstructed object")
+# e = 0
+# for z in [1 5 10 15]
+#     e += 1
+#     subplot(2,2,e)
+#     a = nu[z]/1e9
+#     axis("off")
+#     imshow(x[:,:,z],vmin=0,vmax=0.9)
+#     title("v = $a[z] GHz")
+# end
+# subplots_adjust(bottom=0.1, right=0.8, top=0.95)
+# cax = axes([0.85, 0.1, 0.025, 0.8])
+# colorbar(cax=cax)
 #############################################################################
 #############################################################################
 ######################################  RMSE
-figure(2)
-clf()
-errr = zeros(Float64,15)
-for z = 1:nfreq
-    errr[z] = sqrt(sum((x[:,:,z] - sky[:,:,z]).^2)/sum(sky[:,:,z].^2))
-end
-# plot(nu./1e9,err[350,:]',marker="o",linewidth=2)
-plot(nu./1e9,errr[:],marker="o",linewidth=2)
-xlabel(L"\nu \; (GHz)",fontsize=18)
-ylabel(L"Relative \, rmse",fontsize=16)
-axis([1, 1.8, 0.1, 0.2])
+# figure(2)
+# clf()
+# errr = zeros(Float64,15)
+# for z = 1:nfreq
+#     errr[z] = sqrt(sum((x[:,:,z] - sky[:,:,z]).^2)/sum(sky[:,:,z].^2))
+# end
+# # plot(nu./1e9,err[350,:]',marker="o",linewidth=2)
+# plot(nu./1e9,errr[:],marker="o",linewidth=2)
+# xlabel(L"\nu \; (GHz)",fontsize=18)
+# ylabel(L"Relative \, rmse",fontsize=16)
+# axis([1, 1.8, 0.1, 0.2])
 #############################################################################
 #############################################################################
 ######################################  cste / alpha / beta
-figure(3)
-clf()
-title("Cste Reconstruction")
-subplot(121)
-colorbar(imshow(-alpharec[:,:,1]))
-subplot(122)
-colorbar(imshow(-alpharecsky[:,:,1]))
-
-figure(4)
-clf()
-title("Alpha Reconstruction")
-subplot(121)
-colorbar(imshow(-alpharec[:,:,2]))
-subplot(122)
-colorbar(imshow(-alpharecsky[:,:,2]))
-
-figure(5)
-clf()
-title("Beta Reconstruction")
-subplot(121)
-colorbar(imshow(-alpharec[:,:,3]))
-subplot(122)
-colorbar(imshow(-alpharecsky[:,:,3]))
+# figure(3)
+# clf()
+# title("Cste Reconstruction")
+# subplot(121)
+# colorbar(imshow(-alpharec[:,:,1]))
+# subplot(122)
+# colorbar(imshow(-alpharecsky[:,:,1]))
+#
+# figure(4)
+# clf()
+# title("Alpha Reconstruction")
+# subplot(121)
+# colorbar(imshow(-alpharec[:,:,2]))
+# subplot(122)
+# colorbar(imshow(-alpharecsky[:,:,2]))
+#
+# figure(5)
+# clf()
+# title("Beta Reconstruction")
+# subplot(121)
+# colorbar(imshow(-alpharec[:,:,3]))
+# subplot(122)
+# colorbar(imshow(-alpharecsky[:,:,3]))
 ############################################# plot alpha
 #############################################
 figure(6)
@@ -197,141 +168,141 @@ subplot(1,2,2)
 #############################################################################
 #############################################################################
 ######################################  sky / dirty / rec_obj
-figure(9)
-clf()
-title("multiplot")
-e = 1
-for z in [1 5 10 15]
-    subplot(3,4,e)
-    axis("off")
-    a = nu[z]/1e9
-    imshow(sky[:,:,z],vmin=0,vmax=1.3)
-    title(string(L"$\nu \, = \,$","$a ", L"\, GHz"),fontsize=14)
-    e += 1
-end
-
-e = 5
-for z in [1 5 10 15]
-    subplot(3,4,e)
-    axis("off")
-    imshow(mydata[:,:,z]./maximum(mydata).*1.2,vmin=0,vmax=1.3)
-
-    e += 1
-end
-e = 9
-for z in [1 5 10 15]
-    subplot(3,4,e)
-    axis("off")
-    imshow(x[:,:,z],vmin=0,vmax=1.3)
-
-    e += 1
-end
-
-subplots_adjust(bottom=0.1, right=0.8, top=0.9)
-cax = axes([0.85, 0.1, 0.025, 0.8])
-colorbar(cax=cax)
+# figure(9)
+# clf()
+# title("multiplot")
+# e = 1
+# for z in [1 5 10 15]
+#     subplot(3,4,e)
+#     axis("off")
+#     a = nu[z]/1e9
+#     imshow(sky[:,:,z],vmin=0,vmax=1.3)
+#     title(string(L"$\nu \, = \,$","$a ", L"\, GHz"),fontsize=14)
+#     e += 1
+# end
+#
+# e = 5
+# for z in [1 5 10 15]
+#     subplot(3,4,e)
+#     axis("off")
+#     imshow(mydata[:,:,z]./maximum(mydata).*1.2,vmin=0,vmax=1.3)
+#
+#     e += 1
+# end
+# e = 9
+# for z in [1 5 10 15]
+#     subplot(3,4,e)
+#     axis("off")
+#     imshow(x[:,:,z],vmin=0,vmax=1.3)
+#
+#     e += 1
+# end
+#
+# subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+# cax = axes([0.85, 0.1, 0.025, 0.8])
+# colorbar(cax=cax)
 #############################################################################
 #############################################################################
 ######################################  Reconstruction error
-figure(10)
-clf()
-e = 1
-for z in [1 5 10 15]
-    subplot(2,2,e)
-    axis("off")
-    a = nu[z]/1e9
-    # imshow(sqrt(abs(sky[:,:,z]-x[:,:,z])),vmin = 0, vmax = round(maximum(sqrt(abs(sky[:,:,:]-x[:,:,:]))),1))
-    imshow(((sky[:,:,z]-x[:,:,z])),vmin = 0, vmax = 0.1)
-    title(string(L"$\nu \, = \,$","$a ", L"\, GHz"))
-    e += 1
-end
-
-subplots_adjust(bottom=0.1, right=0.8, top=0.9)
-cax = axes([0.85, 0.1, 0.025, 0.8])
-colorbar(cax=cax)
+# figure(10)
+# clf()
+# e = 1
+# for z in [1 5 10 15]
+#     subplot(2,2,e)
+#     axis("off")
+#     a = nu[z]/1e9
+#     # imshow(sqrt(abs(sky[:,:,z]-x[:,:,z])),vmin = 0, vmax = round(maximum(sqrt(abs(sky[:,:,:]-x[:,:,:]))),1))
+#     imshow(((sky[:,:,z]-x[:,:,z])),vmin = 0, vmax = 0.1)
+#     title(string(L"$\nu \, = \,$","$a ", L"\, GHz"))
+#     e += 1
+# end
+#
+# subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+# cax = axes([0.85, 0.1, 0.025, 0.8])
+# colorbar(cax=cax)
 #############################################################################
 #############################################################################
 ######################################  sky / dirty / rec_obj / error
-figure(11)
-clf()
-title("multiplot")
-e = 1
-for z in [1 5 10 15]
-    subplot(4,4,e)
-    axis("off")
-    a = nu[z]/1e9
-    imshow(sky[:,:,z],vmin=0,vmax=1.3)
-    title(string(L"$\nu \, = \,$","$a ", L"\, GHz"),fontsize=14)
-    e += 1
-end
-e = 5
-for z in [1 5 10 15]
-    subplot(4,4,e)
-    axis("off")
-    imshow(mydata[:,:,z]./maximum(mydata).*1.2,vmin=0,vmax=1.3)
-    e += 1
-end
-e = 9
-for z in [1 5 10 15]
-    subplot(4,4,e)
-    axis("off")
-    imshow(x[:,:,z],vmin=0,vmax=1.3)
-    e += 1
-end
-
-subplots_adjust(bottom=0.1, right=0.8, top=0.9)
-cax = axes([0.85, 0.3, 0.025, 0.6])
-colorbar(cax=cax)
-
-
-e = 13
-for z in [1 5 10 15]
-    subplot(4,4,e)
-    axis("off")
-    imshow(((sky[:,:,z]-x[:,:,z])),vmin = 0, vmax = 0.08)
-    e += 1
-end
-
-subplots_adjust(bottom=0.1, right=0.8, top=0.9)
-cax = axes([0.85, 0.1, 0.025, 0.17])
-colorbar(cax=cax)
-#############################################################################
-#############################################################################
-######################################  sky / dirty / error
-figure(12)
-clf()
-title("multiplot")
-e = 1
-for z in [1 5 10 15]
-    subplot(3,4,e)
-    axis("off")
-    a = nu[z]/1e9
-    imshow(sky[:,:,z],vmin=0,vmax=1.3)
-    title(string(L"$\nu \, = \,$","$a ", L"\, GHz"),fontsize=14)
-    e += 1
-end
-e = 5
-for z in [1 5 10 15]
-    subplot(3,4,e)
-    axis("off")
-    imshow(mydata[:,:,z]./maximum(mydata).*1.2,vmin=0,vmax=1.3)
-    e += 1
-end
-
-subplots_adjust(bottom=0.1, right=0.8, top=0.9)
-cax = axes([0.85, 0.41, 0.025, 0.46])
-colorbar(cax=cax)
-
-e = 9
-for z in [1 5 10 15]
-    subplot(3,4,e)
-    axis("off")
-    imshow(sqrt(abs(sky[:,:,z]-x[:,:,z])),vmin = 0, vmax = round(maximum(sqrt(abs(sky[:,:,:]-x[:,:,:]))),1))
-    e += 1
-end
-#vmax = round(maximum(sky[:,:,:]-x[:,:,:]),1)
-subplots_adjust(bottom=0.1, right=0.8, top=0.9)
-cax = axes([0.85, 0.13, 0.025, 0.18])
-colorbar(cax=cax)
+# figure(11)
+# clf()
+# title("multiplot")
+# e = 1
+# for z in [1 5 10 15]
+#     subplot(4,4,e)
+#     axis("off")
+#     a = nu[z]/1e9
+#     imshow(sky[:,:,z],vmin=0,vmax=1.3)
+#     title(string(L"$\nu \, = \,$","$a ", L"\, GHz"),fontsize=14)
+#     e += 1
+# end
+# e = 5
+# for z in [1 5 10 15]
+#     subplot(4,4,e)
+#     axis("off")
+#     imshow(mydata[:,:,z]./maximum(mydata).*1.2,vmin=0,vmax=1.3)
+#     e += 1
+# end
+# e = 9
+# for z in [1 5 10 15]
+#     subplot(4,4,e)
+#     axis("off")
+#     imshow(x[:,:,z],vmin=0,vmax=1.3)
+#     e += 1
+# end
+#
+# subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+# cax = axes([0.85, 0.3, 0.025, 0.6])
+# colorbar(cax=cax)
+#
+#
+# e = 13
+# for z in [1 5 10 15]
+#     subplot(4,4,e)
+#     axis("off")
+#     imshow(((sky[:,:,z]-x[:,:,z])),vmin = 0, vmax = 0.08)
+#     e += 1
+# end
+#
+# subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+# cax = axes([0.85, 0.1, 0.025, 0.17])
+# colorbar(cax=cax)
+# #############################################################################
+# #############################################################################
+# ######################################  sky / dirty / error
+# figure(12)
+# clf()
+# title("multiplot")
+# e = 1
+# for z in [1 5 10 15]
+#     subplot(3,4,e)
+#     axis("off")
+#     a = nu[z]/1e9
+#     imshow(sky[:,:,z],vmin=0,vmax=1.3)
+#     title(string(L"$\nu \, = \,$","$a ", L"\, GHz"),fontsize=14)
+#     e += 1
+# end
+# e = 5
+# for z in [1 5 10 15]
+#     subplot(3,4,e)
+#     axis("off")
+#     imshow(mydata[:,:,z]./maximum(mydata).*1.2,vmin=0,vmax=1.3)
+#     e += 1
+# end
+#
+# subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+# cax = axes([0.85, 0.41, 0.025, 0.46])
+# colorbar(cax=cax)
+#
+# e = 9
+# for z in [1 5 10 15]
+#     subplot(3,4,e)
+#     axis("off")
+#     imshow(sqrt(abs(sky[:,:,z]-x[:,:,z])),vmin = 0, vmax = round(maximum(sqrt(abs(sky[:,:,:]-x[:,:,:]))),1))
+#     e += 1
+# end
+# #vmax = round(maximum(sky[:,:,:]-x[:,:,:]),1)
+# subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+# cax = axes([0.85, 0.13, 0.025, 0.18])
+# colorbar(cax=cax)
 #############################################################################
 #############################################################################
