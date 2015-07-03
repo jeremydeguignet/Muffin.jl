@@ -114,7 +114,6 @@ end
 
 function loadarray_ws(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,mydata,mypsfadj,file)
     println("warm start")
-    println("init")
     admmst = load(file,"admmst")
     return admmst
 end
