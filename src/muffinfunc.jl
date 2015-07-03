@@ -92,15 +92,27 @@ end
 
     println("loading arrays...")
     if ws == "true"
-        file = string("/home/deguignet/Julia/resultats_100iter_woshaar.jld")
+        file = string("/home/deguignet/resultats.jld")
+        # file = string("/Users/deguignet/test.jld")
         admmst = loadarray_ws(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,
                             skyst.mydata,psfst.mypsfadj,file)
+    algost.niter = load(file,"algost.lastiter")
+    toolst = loadtools(nitermax,nfreq,nxy)
+    toolst.tol1 = load(file,"toolst.tol1")
+    toolst.tol2 = load(file,"toolst.tol2")
+    toolst.tol3 = load(file,"toolst.tol3")
+    toolst.tol4 = load(file,"toolst.tol4")
+    toolst.tol5 = load(file,"toolst.tol5")
+    skyst.mydata = load(file,"skyst.mydata")
+
+
     else
         admmst = loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,
                             skyst.mydata,psfst.mypsfadj)
+        toolst = loadtools(nitermax,nfreq,nxy)
     end
 
-    toolst = loadtools(nitermax,nfreq,nxy)
+
     ##################################
 
                  ##################################
@@ -141,7 +153,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
     spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
 
-    niter = 0
+    niter = algost.niter
 
     loop = true
 
@@ -433,17 +445,17 @@ end
 
 #################################
 ###### proximity operators ######
-# function prox_u(u::Array,μ::Float64)
-#     return max(0, 1-μ./abs(u)).*u
-# end
-
 function prox_u(u::Array,μ::Float64)
-	res=zeros(size(u));
-	x=u;
-	ind = (abs(x).>(.75*μ^(2/3))) ;
-	res[ind]= 2/3*x[ind].*(1+cos(2*pi/3-2/3*acos(μ/8*(abs(x[ind])/3).^(-3/2)))) ;
-   return res
+    return max(0, 1-μ./abs(u)).*u
 end
+
+# function prox_u(u::Array,μ::Float64)
+# 	res=zeros(size(u));
+# 	x=u;
+# 	ind = (abs(x).>(.75*μ^(2/3))) ;
+# 	res[ind]= 2/3*x[ind].*(1+cos(2*pi/3-2/3*acos(μ/8*(abs(x[ind])/3).^(-3/2)))) ;
+#    return res
+# end
 
 #################################
 ####### s / sh estimation #######

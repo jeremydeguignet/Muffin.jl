@@ -1,7 +1,7 @@
 using HDF5, JLD
 using PyPlot
 
-file = "test.jld"
+file = "/Users/deguignet/Documents/Julia/imagerec.jld"
 
 admmst = load(file,"admmst")
 x = admmst.x
