@@ -176,7 +176,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             @parallel for i in 2:nfreq+1
                 z = i-1
                 admmst.wlt[:,:,z],admmst.x[:,:,z],admmst.t[:,:,z,:],admmst.taut[:,:,z,:],admmst.p[:,:,z],admmst.taup[:,:,z] =
-                                            @fetchfrom(z,parallelmuffin(admmst.wlt[:,:,z], admmst.taut[:,:,z,:], admmst.t[:,:,z,:], rhot, admmst.x[:,:,z],
+                                            @fetchfrom(i,parallelmuffin(admmst.wlt[:,:,z], admmst.taut[:,:,z,:], admmst.t[:,:,z,:], rhot, admmst.x[:,:,z],
                                             psfst.mypsf[:,:,z], psfst.mypsfadj[:,:,z], admmst.p[:,:,z], admmst.taup[:,:,z],
                                             fty[:,:,z], rhop, admmst.taus[:,:,z], admmst.s[:,:,z], rhos, admmst.mu, spatialwlt,
                                             μt, nspat))
