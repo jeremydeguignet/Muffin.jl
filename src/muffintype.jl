@@ -121,9 +121,14 @@ end
 function init_Algoparam()
     return Algo_param(0,0,0,0,0,0,0)
 end
+# function init_Admmarray()
+#     return Admm_array([],[],0.,[],[],[],0.,[],[],0.,[],[],0.,[],[],[],[],[],0.,0.,0.,0.,0.)
+# end
+
 function init_Admmarray()
-    return Admm_array([],[],0.,[],[],[],0.,[],[],0.,[],[],0.,[],[],[],[],[],0.,0.,0.,0.,0.)
+    return Admm_array([],[],0.,[],[],[],[],[],[],[],0.,[],[],0.,0.,[],[],[],0.,0.,0.,0.,0.)
 end
+
 function init_TOOLS()
     return TOOLS([],[],[],[],[],[],[],[],[],[])
 end

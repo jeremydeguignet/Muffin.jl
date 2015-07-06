@@ -77,7 +77,9 @@ end
 
 
     ##################################
-    spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
+    spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8]
+    # spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
+
     const nspat = length(spatialwlt)
     const nfreq = size(psfst.mypsf)[3]
     const nspec = 1
@@ -197,7 +199,6 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             # println("time para"," ",a)
     ######################################
     ######################################
-
 
 
             ##############################
@@ -429,7 +430,7 @@ function lecture(directory::ASCIIString)
     data = float64(read(file[1]))
     close(file)
     data = squeeze(data,find(([size(data)...].==1)))
-    data = data[:,:,1:10]
+    data = data[:,:,:]
 
     return data
 end
