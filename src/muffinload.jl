@@ -75,19 +75,19 @@ function loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,mydata,myps
 
 ############################################################
 
-    admmst.taup = zeros(Float64,nxy,nxy,nfreq)
-    admmst.p = zeros(Float64,nxy,nxy,nfreq)
-    admmst.t = zeros(Float64,nxy,nxy,nfreq,nspat)
-    admmst.taut = zeros(Float64,nxy,nxy,nfreq,nspat)
-    admmst.wlt = zeros(Float64,nxy,nxy,nfreq)
+    # admmst.taup = zeros(Float64,nxy,nxy,nfreq)
+    # admmst.p = zeros(Float64,nxy,nxy,nfreq)
+    # admmst.t = zeros(Float64,nxy,nxy,nfreq,nspat)
+    # admmst.taut = zeros(Float64,nxy,nxy,nfreq,nspat)
+    # admmst.wlt = zeros(Float64,nxy,nxy,nfreq)
 
 ############################################################
 
-    # admmst.taup = SharedArray(Float64,nxy,nxy,nfreq)
-    # admmst.p = SharedArray(Float64,nxy,nxy,nfreq)
-    # admmst.t = SharedArray(Float64,nxy,nxy,nfreq,nspat)
-    # admmst.taut = SharedArray(Float64,nxy,nxy,nfreq,nspat)
-    # admmst.wlt = SharedArray(Float64,nxy,nxy,nfreq)
+    admmst.taup = SharedArray(Float64,nxy,nxy,nfreq)
+    admmst.p = SharedArray(Float64,nxy,nxy,nfreq)
+    admmst.t = SharedArray(Float64,nxy,nxy,nfreq,nspat)
+    admmst.taut = SharedArray(Float64,nxy,nxy,nfreq,nspat)
+    admmst.wlt = SharedArray(Float64,nxy,nxy,nfreq)
 
 ############################################################
 
