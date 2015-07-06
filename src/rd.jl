@@ -5,11 +5,11 @@ using FITSIO
 
 ###############################
 ########## Rec Image ##########
-file = string("/Users/deguignet/Documents/Julia/imagerec2.jld")
+file = string("/Users/deguignet/Documents/Julia/imagerec_700ite.jld")
 x = load(file, "admmst.x");
 x = x[1024-512:1024+512-1,1024-512:1024+512-1,:];
 
-file2 = string("/Users/deguignet/Documents/Julia/resultats.jld")
+file2 = string("/Users/deguignet/Documents/Julia/imagerec.jld")
 x2 = load(file2, "admmst.x");
 x2 = x2[1024-512:1024+512-1,1024-512:1024+512-1,:];
 
@@ -179,12 +179,15 @@ clf()
 subplot(1,3,1)
     axis("off")
     imshow((abs(x[:,:,1]).^0.25),cmap=ColorMap("spectral"))
+    title("700 iterations")
 subplot(1,3,2)
     axis("off")
     imshow((abs(x2[:,:,1]).^0.25),cmap=ColorMap("spectral"))
+    title("350 iterations")
 subplot(1,3,3)
     axis("off")
     imshow((abs(sky[:,:,1]).^0.25),cmap=ColorMap("spectral"))
+    title("original object")
 
 # subplot(1,3,1)
 #     axis("off")
@@ -213,7 +216,8 @@ figure(6)
 clf()
 subplot(1,2,1)
     axis("off")
-    (imshow((abs(x[:,:,1]).^0.25),cmap=ColorMap("spectral"),vmax=0.12))
+    (imshow((abs(x[:,:,1]).^0.25),cmap=ColorMap("spectral"),vmax=0.1))
+
 subplot(1,2,2)
     axis("off")
     (imshow((abs(sky[:,:,1]).^0.25),cmap=ColorMap("spectral"),vmax=0.12))

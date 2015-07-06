@@ -48,28 +48,32 @@ type Admm_array
     rhos::Float64
     sh::Array{Float64}
 
-    # taup::Array{Float64}
-    taup::SharedArray{Float64}
-    # p::Array{Float64}
-    p::SharedArray{Float64}
-    rhop::Float64
+############################################################
 
+    # taup::SharedArray{Float64}
+    # p::SharedArray{Float64}
+    # t::SharedArray{Float64}
+    # taut::SharedArray{Float64}
+    # wlt::SharedArray{Float64}
+    # x::SharedArray{Float64}
+
+
+############################################################
+
+    taup::Array{Float64}
+    p::Array{Float64}
+    t::Array{Float64}
+    taut::Array{Float64}
+    wlt::Array{Float64}
+    x::Array{Float64}
+
+############################################################
+
+    rhop::Float64
     tauv::Array{Float64}
     v::Array{Float64}
     rhov::Float64
-
-    # t::Array{Float64}
-    t::SharedArray{Float64}
-    # taut::Array{Float64}
-    taut::SharedArray{Float64}
     rhot::Float64
-
-    # wlt::Array{Float64}
-    wlt::SharedArray{Float64}
-
-    # x::Array{Float64}
-    x::SharedArray{Float64}
-    # Hx::Array{Float64}
     xmm::Array{Float64}
 
     spectralwlt::Array{Float64}

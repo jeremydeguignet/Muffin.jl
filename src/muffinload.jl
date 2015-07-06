@@ -70,20 +70,27 @@ function loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,mydata,myps
     admmst.s = zeros(Float64,nxy,nxy,nfreq)
     admmst.taus = zeros(Float64,nxy,nxy,nfreq)
     admmst.sh = zeros(Float64,nxy,nxy,nfreq)
-    # admmst.taup = zeros(Float64,nxy,nxy,nfreq)
-    admmst.taup = SharedArray(Float64,nxy,nxy,nfreq)
-    # admmst.p = zeros(Float64,nxy,nxy,nfreq)
-    admmst.p = SharedArray(Float64,nxy,nxy,nfreq)
     admmst.tauv = zeros(Float64,nxy,nxy,nfreq)
     admmst.v = zeros(Float64,nxy,nxy,nfreq)
-    # admmst.t = zeros(Float64,nxy,nxy,nfreq,nspat)
-    admmst.t = SharedArray(Float64,nxy,nxy,nfreq,nspat)
 
-    # admmst.taut = zeros(Float64,nxy,nxy,nfreq,nspat)
-    admmst.taut = SharedArray(Float64,nxy,nxy,nfreq,nspat)
+############################################################
 
-    # admmst.wlt = zeros(Float64,nxy,nxy,nfreq)
-    admmst.wlt = SharedArray(Float64,nxy,nxy,nfreq)
+    admmst.taup = zeros(Float64,nxy,nxy,nfreq)
+    admmst.p = zeros(Float64,nxy,nxy,nfreq)
+    admmst.t = zeros(Float64,nxy,nxy,nfreq,nspat)
+    admmst.taut = zeros(Float64,nxy,nxy,nfreq,nspat)
+    admmst.wlt = zeros(Float64,nxy,nxy,nfreq)
+
+############################################################
+
+    # admmst.taup = SharedArray(Float64,nxy,nxy,nfreq)
+    # admmst.p = SharedArray(Float64,nxy,nxy,nfreq)
+    # admmst.t = SharedArray(Float64,nxy,nxy,nfreq,nspat)
+    # admmst.taut = SharedArray(Float64,nxy,nxy,nfreq,nspat)
+    # admmst.wlt = SharedArray(Float64,nxy,nxy,nfreq)
+
+############################################################
+
     admmst.x = copy(mydata)
     admmst.xmm = zeros(Float64,nxy,nxy,nfreq)
     admmst.spectralwlt = zeros(Float64,nxy,nxy,nfreq)
