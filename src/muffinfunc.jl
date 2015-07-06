@@ -186,7 +186,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             #                                 fty[:,:,z], rhop, admmst.taus[:,:,z], admmst.s[:,:,z], rhos, admmst.mu, spatialwlt,
             #                                 μt, nspat))
 
-            tic()
+            
             @sync @parallel for z in 1:nfreq
                 admmst.wlt[:,:,z],admmst.x[:,:,z],admmst.t[:,:,z,:],admmst.taut[:,:,z,:],admmst.p[:,:,z],admmst.taup[:,:,z] =
                                             parallelmuffin(admmst.wlt[:,:,z], admmst.taut[:,:,z,:], admmst.t[:,:,z,:], rhot, admmst.x[:,:,z],
