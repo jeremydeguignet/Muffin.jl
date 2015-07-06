@@ -568,12 +568,12 @@ end
 
 function parallelmuffin(wlt,taut,t,rhot,x,psf,psfadj,p,taup,fty,rhop,taus,s,rhos,mu,spatialwlt,μt,nspat)
 
-    wlt = convert(Array,wlt)
-    x = convert(Array,x)
-    p = convert(Array,p)
-    taup = convert(Array,taup)
-    t = convert(Array,taut)
-    taut = convert(Array,taut)
+    # wlt = convert(Array,wlt)
+    # x = convert(Array,x)
+    # p = convert(Array,p)
+    # taup = convert(Array,taup)
+    # t = convert(Array,taut)
+    # taut = convert(Array,taut)
 
 
         wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
@@ -604,7 +604,7 @@ function parallelmuffin(wlt,taut,t,rhot,x,psf,psfadj,p,taup,fty,rhop,taus,s,rhos
         tmp = x-taup/rhop
         p = max(0,tmp)
         taup = taup + rhop*(p-x)
-    
+
 
     return wlt,x,t,taut,p,taup
 
