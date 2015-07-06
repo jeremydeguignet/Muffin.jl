@@ -173,7 +173,8 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
                     "          "," ","|"," ","         "," "," |"," ","          "," ","|"," ")
             # println("ADMM iteration: $niter")
             tic()
-            @parallel for z in 1:nfreq
+            @parallel for i in 2:nfreq+1
+                z = i-1
                 admmst.wlt[:,:,z],admmst.x[:,:,z],admmst.t[:,:,z,:],admmst.taut[:,:,z,:],admmst.p[:,:,z],admmst.taup[:,:,z] =
                                             @fetchfrom(z,parallelmuffin(admmst.wlt[:,:,z], admmst.taut[:,:,z,:], admmst.t[:,:,z,:], rhot, admmst.x[:,:,z],
                                             psfst.mypsf[:,:,z], psfst.mypsfadj[:,:,z], admmst.p[:,:,z], admmst.taup[:,:,z],
