@@ -203,12 +203,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             ##############################
             ######### prox spec ##########
 
-            tic()
             tmp = admmst.tauv + rhov*admmst.v
-            a = toq()
-            println("tmp"," ",a)
-            a=toq()
-            println("time para"," ",a)
 
             admmst.s, admmst.sh = estime_ssh(admmst.s,admmst.sh,tmp,nxy,nspec,admmst.spectralwlt,
                                               admmst.x,admmst.taus,rhov,rhos)
@@ -580,7 +575,6 @@ function parallelmuffin(wlt,taut,t,rhot,x,psf,psfadj,p,taup,fty,rhop,taus,s,rhos
     # taut = convert(Array,taut)
 
     for i in 1:20
-        println("iteration ",i)
         wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
         b = fty + taup + rhop*p + taus + rhos*s
         wlt_b = wlt + b
