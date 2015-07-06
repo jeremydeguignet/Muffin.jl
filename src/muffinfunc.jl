@@ -580,6 +580,7 @@ function parallelmuffin(wlt,taut,t,rhot,x,psf,psfadj,p,taup,fty,rhop,taus,s,rhos
     # taut = convert(Array,taut)
 
     for i in 1:100
+        println("iteration ",i)
         wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
         b = fty + taup + rhop*p + taus + rhos*s
         wlt_b = wlt + b
