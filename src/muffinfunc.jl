@@ -173,14 +173,15 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
                     "          "," ","|"," ","         "," "," |"," ","          "," ","|"," ")
             # println("ADMM iteration: $niter")
             tic()
-            @parallel for z in 1:nfreq
+
             # @parallel for i in 2:nfreq+1
             #     z = i-1
-                # admmst.wlt[:,:,z],admmst.x[:,:,z],admmst.t[:,:,z,:],admmst.taut[:,:,z,:],admmst.p[:,:,z],admmst.taup[:,:,z] =
-                #                             @fetchfrom(i,parallelmuffin(admmst.wlt[:,:,z], admmst.taut[:,:,z,:], admmst.t[:,:,z,:], rhot, admmst.x[:,:,z],
-                #                             psfst.mypsf[:,:,z], psfst.mypsfadj[:,:,z], admmst.p[:,:,z], admmst.taup[:,:,z],
-                #                             fty[:,:,z], rhop, admmst.taus[:,:,z], admmst.s[:,:,z], rhos, admmst.mu, spatialwlt,
-                #                             μt, nspat))
+            #     admmst.wlt[:,:,z],admmst.x[:,:,z],admmst.t[:,:,z,:],admmst.taut[:,:,z,:],admmst.p[:,:,z],admmst.taup[:,:,z] =
+            #                                 @fetchfrom(i,parallelmuffin(admmst.wlt[:,:,z], admmst.taut[:,:,z,:], admmst.t[:,:,z,:], rhot, admmst.x[:,:,z],
+            #                                 psfst.mypsf[:,:,z], psfst.mypsfadj[:,:,z], admmst.p[:,:,z], admmst.taup[:,:,z],
+            #                                 fty[:,:,z], rhop, admmst.taus[:,:,z], admmst.s[:,:,z], rhos, admmst.mu, spatialwlt,
+            #                                 μt, nspat))
+                @parallel for z in 1:nfreq
                 admmst.wlt[:,:,z],admmst.x[:,:,z],admmst.t[:,:,z,:],admmst.taut[:,:,z,:],admmst.p[:,:,z],admmst.taup[:,:,z] =
                                             parallelmuffin(admmst.wlt[:,:,z], admmst.taut[:,:,z,:], admmst.t[:,:,z,:], rhot, admmst.x[:,:,z],
                                             psfst.mypsf[:,:,z], psfst.mypsfadj[:,:,z], admmst.p[:,:,z], admmst.taup[:,:,z],
@@ -429,7 +430,7 @@ function lecture(directory::ASCIIString)
     data = float64(read(file[1]))
     close(file)
     data = squeeze(data,find(([size(data)...].==1)))
-    data = data[:,:,1:16]
+    data = data[:,:,1:10]
 
     return data
 end
@@ -540,6 +541,13 @@ function myspat(x,t,taut,tmp1,tmp2, nspat, spatialwlt, rhot, μt)
 end
 
 function parallelmuffin(wlt,taut,t,rhot,x,psf,psfadj,p,taup,fty,rhop,taus,s,rhos,mu,spatialwlt,μt,nspat)
+
+    wlt = convert(Array,wlt)
+    x = convert(Array,x)
+    p = convert(Array,p)
+    taup = convert(Array,taup)
+    t = convert(Array,taut)
+    taut = convert(Array,taut)
 
     wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
     b = fty + taup + rhop*p + taus + rhos*s
