@@ -454,7 +454,7 @@ function lecture(directory::ASCIIString)
     data = float64(read(file[1]))
     close(file)
     data = squeeze(data,find(([size(data)...].==1)))
-    data = data[:,:,1:10]
+    data = data[:,:,1:16]
 
     return data
 end
@@ -574,7 +574,7 @@ function parallelmuffin(wlt,taut,t,rhot,x,psf,psfadj,p,taup,fty,rhop,taus,s,rhos
     # t = convert(Array,taut)
     # taut = convert(Array,taut)
 
-    for i in 1:20
+    for i in 1:15
         wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
         b = fty + taup + rhop*p + taus + rhos*s
         wlt_b = wlt + b
