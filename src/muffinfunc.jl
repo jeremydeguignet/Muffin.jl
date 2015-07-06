@@ -185,74 +185,19 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             #                                 psfst.mypsf[:,:,z], psfst.mypsfadj[:,:,z], admmst.p[:,:,z], admmst.taup[:,:,z],
             #                                 fty[:,:,z], rhop, admmst.taus[:,:,z], admmst.s[:,:,z], rhos, admmst.mu, spatialwlt,
             #                                 μt, nspat))
-
-            
-            @sync @parallel for z in 1:nfreq
-                admmst.wlt[:,:,z],admmst.x[:,:,z],admmst.t[:,:,z,:],admmst.taut[:,:,z,:],admmst.p[:,:,z],admmst.taup[:,:,z] =
-                                            parallelmuffin(admmst.wlt[:,:,z], admmst.taut[:,:,z,:], admmst.t[:,:,z,:], rhot, admmst.x[:,:,z],
-                                            psfst.mypsf[:,:,z], psfst.mypsfadj[:,:,z], admmst.p[:,:,z], admmst.taup[:,:,z],
-                                            fty[:,:,z], rhop, admmst.taus[:,:,z], admmst.s[:,:,z], rhos, admmst.mu, spatialwlt,
-                                            μt, nspat)
-
-            end
-
-
-
-
-
-            ##############################
-            ######### prox spec ##########
-
-            tmp = admmst.tauv + rhov*admmst.v
-
-            admmst.s, admmst.sh = estime_ssh(admmst.s,admmst.sh,tmp,nxy,nspec,admmst.spectralwlt,
-                                              admmst.x,admmst.taus,rhov,rhos)
-
-            tmp = admmst.sh - admmst.tauv/rhov
-            admmst.v = prox_u(tmp,μv/rhov)
-
-
-            ########################################
-            #### update of Lagrange multipliers ####
-
-            admmst.tauv = admmst.tauv + rhov*(admmst.v-admmst.sh)
-            admmst.taus = admmst.taus + rhos*(admmst.s-admmst.x)
-
-    ######################################
-    ######################################
-
+#########################
             #
-            # ##############################
-            # ########## update x ##########
-            # for z in 1:nfreq
-            #     admmst.wlt[:,:,z] = myidwt((admmst.wlt)[:,:,z], nspat, (admmst.taut)[:,:,z,:], rhot,
-            #                         (admmst.t)[:,:,z,:], spatialwlt)
+            # @sync @parallel for z in 1:nfreq
+            #     admmst.wlt[:,:,z],admmst.x[:,:,z],admmst.t[:,:,z,:],admmst.taut[:,:,z,:],admmst.p[:,:,z],admmst.taup[:,:,z] =
+            #                                 parallelmuffin(admmst.wlt[:,:,z], admmst.taut[:,:,z,:], admmst.t[:,:,z,:], rhot, admmst.x[:,:,z],
+            #                                 psfst.mypsf[:,:,z], psfst.mypsfadj[:,:,z], admmst.p[:,:,z], admmst.taup[:,:,z],
+            #                                 fty[:,:,z], rhop, admmst.taus[:,:,z], admmst.s[:,:,z], rhos, admmst.mu, spatialwlt,
+            #                                 μt, nspat)
+            #
             # end
             #
-            # b = fty + admmst.taup + rhop*admmst.p + admmst.taus + rhos*admmst.s
             #
-            # admmst.x = estime_x_par(admmst.x,psfst.mypsf,psfst.mypsfadj,admmst.wlt + b,mu,nfreq)
-            # ##############################
-            # ######### prox spat ##########
-            # tmp1 = 0.0
-            # tmp2 = zeros(Float64,nxy,nxy)
-            # for z in 1:nfreq
-            #     for b in 1:nspat
-            #             hx = dwt(admmst.x[:,:,z],wavelet(spatialwlt[b]))
-            #             tmp = hx - admmst.taut[:,:,z,b]/rhot
-            #             admmst.t[:,:,z,b] = prox_u(tmp,μt/rhot)
-            #             admmst.taut[:,:,z,b] = admmst.taut[:,:,z,b] + rhot*(admmst.t[:,:,z,b]-hx)
-            #             tmp1 = vecnorm([tmp2 (hx-(admmst.t)[:,:,z,b])],2)
-            #             tmp2 = (hx-(admmst.t)[:,:,z,b])
-            #     end
-            # end
-            # tmp2[:] = 0
-            # ##############################
-            # ###### prox positivity #######
             #
-            # tmp = admmst.x-admmst.taup/rhop
-            #
-            # admmst.p = max(0,tmp)
             #
             #
             # ##############################
@@ -270,9 +215,64 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             # ########################################
             # #### update of Lagrange multipliers ####
             #
-            # admmst.taup = admmst.taup + rhop*(admmst.p-admmst.x)
             # admmst.tauv = admmst.tauv + rhov*(admmst.v-admmst.sh)
             # admmst.taus = admmst.taus + rhos*(admmst.s-admmst.x)
+
+    ######################################
+    ######################################
+
+
+            ##############################
+            ########## update x ##########
+            for z in 1:nfreq
+                admmst.wlt[:,:,z] = myidwt((admmst.wlt)[:,:,z], nspat, (admmst.taut)[:,:,z,:], rhot,
+                                    (admmst.t)[:,:,z,:], spatialwlt)
+            end
+
+            b = fty + admmst.taup + rhop*admmst.p + admmst.taus + rhos*admmst.s
+
+            admmst.x = estime_x_par(admmst.x,psfst.mypsf,psfst.mypsfadj,admmst.wlt + b,mu,nfreq)
+            ##############################
+            ######### prox spat ##########
+            tmp1 = 0.0
+            tmp2 = zeros(Float64,nxy,nxy)
+            for z in 1:nfreq
+                for b in 1:nspat
+                        hx = dwt(admmst.x[:,:,z],wavelet(spatialwlt[b]))
+                        tmp = hx - admmst.taut[:,:,z,b]/rhot
+                        admmst.t[:,:,z,b] = prox_u(tmp,μt/rhot)
+                        admmst.taut[:,:,z,b] = admmst.taut[:,:,z,b] + rhot*(admmst.t[:,:,z,b]-hx)
+                        tmp1 = vecnorm([tmp2 (hx-(admmst.t)[:,:,z,b])],2)
+                        tmp2 = (hx-(admmst.t)[:,:,z,b])
+                end
+            end
+            tmp2[:] = 0
+            ##############################
+            ###### prox positivity #######
+
+            tmp = admmst.x-admmst.taup/rhop
+
+            admmst.p = max(0,tmp)
+
+
+            ##############################
+            ######### prox spec ##########
+
+            tmp = admmst.tauv + rhov*admmst.v
+
+            admmst.s, admmst.sh = estime_ssh(admmst.s,admmst.sh,tmp,nxy,nspec,admmst.spectralwlt,
+                                              admmst.x,admmst.taus,rhov,rhos)
+
+            tmp = admmst.sh - admmst.tauv/rhov
+            admmst.v = prox_u(tmp,μv/rhov)
+
+
+            ########################################
+            #### update of Lagrange multipliers ####
+
+            admmst.taup = admmst.taup + rhop*(admmst.p-admmst.x)
+            admmst.tauv = admmst.tauv + rhov*(admmst.v-admmst.sh)
+            admmst.taus = admmst.taus + rhos*(admmst.s-admmst.x)
 
     ######################################
     ######################################
@@ -283,7 +283,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
 
             push!(toolst.tol1,vecnorm(admmst.x - admmst.xmm, 2)^2)
             push!(toolst.tol2,vecnorm(admmst.x - admmst.p, 2)^2)
-            # push!(toolst.tol3,tmp1^2)
+            push!(toolst.tol3,tmp1^2)
             push!(toolst.tol4,vecnorm(admmst.x - admmst.s, 2)^2)
             push!(toolst.tol5,vecnorm(admmst.sh - admmst.v, 2)^2)
 
@@ -309,8 +309,8 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             @printf("%03d  | ", niter)
             @printf("%02.04e | ", toolst.tol1[niter])
             @printf("%02.04e | ", toolst.tol2[niter])
-            # @printf("%02.04e | ", toolst.tol3[niter])
-            @printf("%02.04e | ", 0)
+            @printf("%02.04e | ", toolst.tol3[niter])
+            # @printf("%02.04e | ", 0)
             @printf("%02.04e | ", toolst.tol4[niter])
             @printf("%02.04e | ", toolst.tol5[niter])
             @printf("%f seconds  \n", toq())
