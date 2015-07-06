@@ -195,8 +195,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
                                             μt, nspat)
 
             end
-            a=toq()
-            println("time para"," ",a)
+
 
 
 
@@ -204,7 +203,12 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             ##############################
             ######### prox spec ##########
 
+            tic()
             tmp = admmst.tauv + rhov*admmst.v
+            a = toq()
+            println("tmp"," ",a)
+            a=toq()
+            println("time para"," ",a)
 
             admmst.s, admmst.sh = estime_ssh(admmst.s,admmst.sh,tmp,nxy,nspec,admmst.spectralwlt,
                                               admmst.x,admmst.taus,rhov,rhos)
@@ -455,7 +459,7 @@ function lecture(directory::ASCIIString)
     data = float64(read(file[1]))
     close(file)
     data = squeeze(data,find(([size(data)...].==1)))
-    data = data[:,:,:]
+    data = data[:,:,1:16]
 
     return data
 end
