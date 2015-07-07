@@ -94,7 +94,7 @@ end
 
     println("loading arrays...")
     if ws == "true"
-        file = string("/home/deguignet/resultats.jld")
+        file = string("/home/deguignet/resultats_350ite_woshar.jld")
         # file = string("/Users/deguignet/test.jld")
         admmst = loadarray_ws(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,
                             skyst.mydata,psfst.mypsfadj,file)

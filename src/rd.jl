@@ -5,7 +5,7 @@ using FITSIO
 
 ###############################
 ########## Rec Image ##########
-file = string("/Users/deguignet/Documents/Julia/imagerec_700ite.jld")
+file = string("/Users/deguignet/Documents/Julia/imagerec_350ite_woshar.jld")
 x = load(file, "admmst.x");
 x = x[1024-512:1024+512-1,1024-512:1024+512-1,:];
 
