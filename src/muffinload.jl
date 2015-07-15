@@ -65,29 +65,28 @@ function loadparam(nspat,nfreq,nspec,nxy,niter,lastiter,nitermax)
     return algost
 end
 
-function loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,mydata,mypsfadj)
-    admmst = init_Admmarray()
+function loadarray(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,mydata,mypsfadj,parallel)
+    admmst = init_Admmarray(parallel)
     admmst.s = zeros(Float64,nxy,nxy,nfreq)
     admmst.taus = zeros(Float64,nxy,nxy,nfreq)
     admmst.sh = zeros(Float64,nxy,nxy,nfreq)
     admmst.tauv = zeros(Float64,nxy,nxy,nfreq)
     admmst.v = zeros(Float64,nxy,nxy,nfreq)
 
-############################################################
-
-    admmst.taup = zeros(Float64,nxy,nxy,nfreq)
-    admmst.p = zeros(Float64,nxy,nxy,nfreq)
-    admmst.t = zeros(Float64,nxy,nxy,nfreq,nspat)
-    admmst.taut = zeros(Float64,nxy,nxy,nfreq,nspat)
-    admmst.wlt = zeros(Float64,nxy,nxy,nfreq)
-
-############################################################
-
-    # admmst.taup = SharedArray(Float64,nxy,nxy,nfreq)
-    # admmst.p = SharedArray(Float64,nxy,nxy,nfreq)
-    # admmst.t = SharedArray(Float64,nxy,nxy,nfreq,nspat)
-    # admmst.taut = SharedArray(Float64,nxy,nxy,nfreq,nspat)
-    # admmst.wlt = SharedArray(Float64,nxy,nxy,nfreq)
+    if parallel == "true"
+        println("Parallel muffin")
+        admmst.taup = SharedArray(Float64,nxy,nxy,nfreq)
+        admmst.p = SharedArray(Float64,nxy,nxy,nfreq)
+        admmst.t = SharedArray(Float64,nxy,nxy,nfreq,nspat)
+        admmst.taut = SharedArray(Float64,nxy,nxy,nfreq,nspat)
+        admmst.wlt = SharedArray(Float64,nxy,nxy,nfreq)
+    else
+        admmst.taup = zeros(Float64,nxy,nxy,nfreq)
+        admmst.p = zeros(Float64,nxy,nxy,nfreq)
+        admmst.t = zeros(Float64,nxy,nxy,nfreq,nspat)
+        admmst.taut = zeros(Float64,nxy,nxy,nfreq,nspat)
+        admmst.wlt = zeros(Float64,nxy,nxy,nfreq)
+    end
 
 ############################################################
 

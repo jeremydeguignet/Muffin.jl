@@ -83,3 +83,26 @@ end
                                 psfst.mypsf[:,:,z], psfst.mypsfadj[:,:,z], admmst.p[:,:,z], admmst.taup[:,:,z],
                                 fty[:,:,z], rhop, admmst.taus[:,:,z], admmst.s[:,:,z], rhos, admmst.mu, spatialwlt,
                                 μt, nspat))
+end
+
+
+
+
+image = randn(2048,2048,16);
+psf = randn(2048,2048,16);
+resultats = SharedArray(Float64,2048,2048,16);
+
+
+@time @parallel for z in 1:16
+    resultats[:,:,z] = (image[:,:,z].*psf[:,:,z])
+    psf[:,:,z] = psf[:,:,z]*2
+    println(sum(resultats[:,:,z]))
+    # rr = RemoteRef(myid())
+    # put!(rr,psf[:,:,z])
+end
+
+@time @parallel for z in 1:16
+    resultats = @fetchfrom(z+1, gc())
+    image = @fetchfrom(z+1, gc())
+    psf = @fetchfrom(z+1, gc())
+end

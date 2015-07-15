@@ -5,11 +5,11 @@ using FITSIO
 
 ###############################
 ########## Rec Image ##########
-file = string("/Users/deguignet/Documents/Julia/imagerec_350ite_woshar.jld")
+file = string("/Users/deguignet/Documents/Julia/imagerec_400ite_woshar.jld")
 x = load(file, "admmst.x");
 x = x[1024-512:1024+512-1,1024-512:1024+512-1,:];
 
-file2 = string("/Users/deguignet/Documents/Julia/imagerec.jld")
+file2 = string("/Users/deguignet/Documents/Julia/imagerec_700ite.jld")
 x2 = load(file2, "admmst.x");
 x2 = x2[1024-512:1024+512-1,1024-512:1024+512-1,:];
 
@@ -176,18 +176,35 @@ end
 ##################################
 figure(6)
 clf()
-subplot(1,3,1)
+subplot(2,3,1)
     axis("off")
-    imshow((abs(x[:,:,1]).^0.25),cmap=ColorMap("spectral"))
+    colorbar(imshow((abs(x[:,:,1]).^0.25),cmap=ColorMap("spectral")))
+    title("400 iterations w/o shaar")
+    ylabel("puissance 1/4")
+subplot(2,3,2)
+    axis("off")
+    colorbar(imshow((abs(x2[:,:,1]).^0.25),cmap=ColorMap("spectral")))
     title("700 iterations")
-subplot(1,3,2)
+subplot(2,3,3)
     axis("off")
-    imshow((abs(x2[:,:,1]).^0.25),cmap=ColorMap("spectral"))
-    title("350 iterations")
-subplot(1,3,3)
-    axis("off")
-    imshow((abs(sky[:,:,1]).^0.25),cmap=ColorMap("spectral"))
+    colorbar(imshow((abs(sky[:,:,1]).^0.25),cmap=ColorMap("spectral")))
     title("original object")
+
+    subplot(2,3,4)
+        axis("off")
+        colorbar(imshow((abs(x[:,:,1])),cmap=ColorMap("spectral")))
+        title("400 iterations w/o shaar")
+        ylabel("puissance 1")
+
+    subplot(2,3,5)
+        axis("off")
+        colorbar(imshow((abs(x2[:,:,1])),cmap=ColorMap("spectral")))
+        title("700 iterations")
+    subplot(2,3,6)
+        axis("off")
+        colorbar(imshow((abs(sky[:,:,1])),cmap=ColorMap("spectral")))
+        title("original object")
+
 
 # subplot(1,3,1)
 #     axis("off")
