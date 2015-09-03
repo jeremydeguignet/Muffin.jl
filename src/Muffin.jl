@@ -20,7 +20,7 @@ module Muffin
     using GHF
 
 
-    export muffin,savedata
+    export muffin,savedata,muffin_DA
 
     include("muffintype.jl")
 
@@ -30,7 +30,8 @@ module Muffin
     include("muffinfunc.jl")
     include("muffinload.jl")
     include("savedata.jl")
-    
+    include("darraytest.jl")
+
 
 end
 
@@ -43,5 +44,6 @@ end
 # Pkg.add("Images")
 # Pkg.add("Wavelets")
 # Pkg.add("HDF5")
+# Pkg.add("JLD")
 
 ################################
