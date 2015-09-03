@@ -314,12 +314,7 @@ function muffinadmm_DA(psfst, skyst, algost, admmst, toolst, refst)
     ######################################
 
 
-    @sync @parallel for z in 1:nfreq
-        # # refst.wlt[z],refst.x[z],refst.t[z],refst.taut[z],refst.p[z],refst.taup[z] =
-        #             println(                @spawnat(a[z],parallelmuffin(fetch(refst.wlt[z]), fetch(refst.taut[z]), fetch(refst.t[z]), rhot, fetch(refst.x[z]),
-        #                             fetch(refst.psf[z]), fetch(refst.p[z]), fetch(refst.taup[z]),
-        #                             fetch(refst.fty[z]), rhop, fetch(refst.taus[z]), fetch(refst.s[z]), rhos, admmst.mu, spatialwlt,
-        #                             μt, nspat)))
+    @sync for z in 1:nfreq
         refst.wlt[z] =  @spawnat(a[z],muffpar_wlt(fetch(refst.wlt[z]), fetch(refst.taut[z]), fetch(refst.t[z]), rhot,  spatialwlt, nspat))
         refst.x[z] = @spawnat(a[z],muffpar_x(fetch(refst.wlt[z]), fetch(refst.x[z]), fetch(refst.psf[z]), fetch(refst.p[z]),
                                              fetch(refst.taup[z]), fetch(refst.fty[z]), rhop, admmst.taus[:,:,z], admmst.s[:,:,z],
@@ -328,8 +323,6 @@ function muffinadmm_DA(psfst, skyst, algost, admmst, toolst, refst)
         refst.taut[z] = @spawnat(a[z],muffpar_taut(fetch(refst.taut[z]), fetch(refst.t[z]), rhot, fetch(refst.x[z]), spatialwlt, μt, nspat))
         refst.p[z] = @spawnat(a[z],muffpar_p(fetch(refst.x[z]), fetch(refst.p[z]), fetch(refst.taup[z]), rhop))
         refst.taup[z] = @spawnat(a[z],muffpar_taup(fetch(refst.x[z]), fetch(refst.p[z]), fetch(refst.taup[z]), rhop))
-
-
     end
 
     for z in 1: nfreq
