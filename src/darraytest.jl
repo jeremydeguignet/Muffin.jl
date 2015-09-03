@@ -314,7 +314,7 @@ function muffinadmm_DA(psfst, skyst, algost, admmst, toolst, refst)
     ######################################
 
 
-    @sync for z in 1:nfreq
+    @sync @parallel for z in 1:nfreq
         # # refst.wlt[z],refst.x[z],refst.t[z],refst.taut[z],refst.p[z],refst.taup[z] =
         #             println(                @spawnat(a[z],parallelmuffin(fetch(refst.wlt[z]), fetch(refst.taut[z]), fetch(refst.t[z]), rhot, fetch(refst.x[z]),
         #                             fetch(refst.psf[z]), fetch(refst.p[z]), fetch(refst.taup[z]),
