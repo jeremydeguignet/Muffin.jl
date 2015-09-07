@@ -472,13 +472,80 @@ freq14_tt = genshared4D(admmst.t[:,:,14,:],admmst.taut[:,:,14,:],nspat,a[14])
 freq15_tt = genshared4D(admmst.t[:,:,15,:],admmst.taut[:,:,15,:],nspat,a[15])
 
 
+#########################################################################
+# genshared3D(x,p,taup,wlt,psf,fty,s,taus)
 
+
+
+function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64,3},wlt::Array{Float64,3},psf::Array{Float64,3},
+                     fty::Array{Float64,3},s::Array{Float64,3},taus::Array{Float64,3})
+
+
+    Ndim = 8
+    nxy = size(x)[1]
+    nfreq = size(x)[3]
+
+    workers = nworkers()
+    a = int(repmat(linspace(2,workers+1,workers),int(ceil(nfreq/workers)),1))
+    a = a[1:nfreq]
+
+
+    tabname = "freq"
+    toeval = ""
+
+    listarr = Dict{Any,Any}
+    listarr = {0 => 1}
+    for z in 1:nfreq
+          listarr[z] = SharedArray(Float64,nxy,nxy,Ndim,pids=[1,a[z]]);
+    end
+
+
+
+    for z in 1:nfreq
+        toeval = string(toeval,string(tabname, "$z", "=", "similar(listarr[$z]);"))
+        println(toeval)
+    end
+    println(" 1")
+    println(listarr[1])
+    println("2 ")
+    println(listarr[2])
+    println(" 3")
+    println(listarr[3])
+    println(" 4")
+    println(listarr[4])
+    println(parse(toeval))
+    eval(parse(toeval))
+    toeval = ""
+
+    result = {0 => 1}
+    for z in 1:nfreq
+
+        result[1] = x[:,:,z]
+        result[2] = p[:,:,z]
+        result[3] = taup[:,:,z]
+        result[4] = wlt[:,:,z]
+        result[5] = psf[:,:,z]
+        result[6] = fty[:,:,z]
+        result[7] = s[:,:,z]
+        result[8] = taus[:,:,z]
+
+        chaine = string("for nd in 1:Ndim;",string(tabname, "$z", "[:,:,nd]","=","$result[nd];")," end;")
+
+        toeval = string(toeval,chaine)
+    end
+    eval(parse(toeval))
+
+end
 
 
 #########################################################################
 Ndim = 8
 nxy = 2
 nfreq = 4
+
+workers = nworkers()
+a = int(repmat(linspace(2,workers+1,workers),int(ceil(nfreq/workers)),1))
+a = a[1:nfreq]
 
 x = randn(nxy,nxy,nfreq);
 p =randn(nxy,nxy,nfreq);
@@ -493,10 +560,14 @@ taus =randn(nxy,nxy,nfreq);
 tabname = "freq"
 toeval = ""
 
-X = zeros(nxy,nxy,Ndim);
+listarr = {0 => 1}
+for z in 1:nfreq
+      listarr[z] = SharedArray(Float64,nxy,nxy,Ndim,pids=[1,a[z]]);
+end
 
 for n in 1:nfreq
-  toeval = string(toeval,string(tabname, "$n", "=", "similar(X);"))
+    proc = n
+  toeval = string(toeval,string(tabname, "$n", "=", "similar(listarr[$n]);"))
 end
 eval(parse(toeval))
 toeval = ""
@@ -518,3 +589,4 @@ for z in 1:nfreq
     toeval = string(toeval,chaine)
 end
 eval(parse(toeval))
+#########################################################################
