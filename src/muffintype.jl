@@ -115,6 +115,7 @@ type TOOLS
     errorrec::Array{Float64}
     errorest::Array{Float64}
     errorraw::Array{Float64}
+    mask2D::Array{Float64}
 end
 ####################################
 ####################################
@@ -150,5 +151,5 @@ function init_Admmarray(parallel)
 end
 
 function init_TOOLS()
-    return TOOLS([],[],[],[],[],[],[],[],[],[])
+    return TOOLS([],[],[],[],[],[],[],[],[],[],[])
 end

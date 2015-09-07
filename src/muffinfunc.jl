@@ -4,7 +4,7 @@
 
 function muffin(;folder="",dataobj="",datapsf="",nitermax = 500, rhop = 1,
                 rhot = 5, rhov = 2, rhos = 1, μt = 5e-1, μv = 1e-0, mueps = 1e-3,
-                bw = 5, ws="",parallel="")
+                bw = 5, ws="",parallel="",mask="")
 
 println("")
 println("MUFFIN initialisation")
@@ -114,6 +114,12 @@ end
         toolst = loadtools(nitermax,nfreq,nxy)
     end
 
+    println(typeof(mask))
+    if typeof(mask) == Int64
+        toolst.mask2D = maskgen(admmst.x[:,:,1],mask)
+        println(sum(toolst.mask2D)/4)
+    end
+
 
     ##################################
 
@@ -152,6 +158,8 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
     const nxy = algost.nxy
     const fty = admmst.fty
     const nitermax = algost.nitermax
+    const mask = toolst.mask2D
+
 
     spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
 
@@ -187,12 +195,12 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
             #                                 μt, nspat))
 ########################
 
-            @sync @parallel for z in 1:nfreq
+            for z in 1:nfreq
                 admmst.wlt[:,:,z],admmst.x[:,:,z],admmst.t[:,:,z,:],admmst.taut[:,:,z,:],admmst.p[:,:,z],admmst.taup[:,:,z] =
                                             parallelmuffin(admmst.wlt[:,:,z], admmst.taut[:,:,z,:], admmst.t[:,:,z,:], rhot, admmst.x[:,:,z],
                                             psfst.mypsf[:,:,z], admmst.p[:,:,z], admmst.taup[:,:,z],
                                             fty[:,:,z], rhop, admmst.taus[:,:,z], admmst.s[:,:,z], rhos, admmst.mu, spatialwlt,
-                                            μt, nspat)
+                                            μt, nspat,mask)
 
             end
 
@@ -582,7 +590,7 @@ end
 function parallelmuffin(wlt::Array{Float64,2},taut::Array{Float64,4},t::Array{Float64,4},rhot::Float64,
                         x::Array{Float64,2},psf::Array{Float64,2},p::Array{Float64,2},taup::Array{Float64,2},
                         fty::Array{Float64,2},rhop::Float64,taus::Array{Float64,2},s::Array{Float64,2},rhos::Float64,
-                        mu::Float64,spatialwlt,μt::Float64,nspat::Int)
+                        mu::Float64,spatialwlt,μt::Float64,nspat::Int,mask::Array{Float64,2})
 
         wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
         b = fty + taup + rhop*p + taus + rhos*s
@@ -610,7 +618,7 @@ function parallelmuffin(wlt::Array{Float64,2},taut::Array{Float64,4},t::Array{Fl
 
 
         tmp = x-taup/rhop
-        p = max(0,tmp)
+        p = max(0,tmp).*mask
         taup = taup + rhop*(p-x)
 
     return wlt,x,t,taut,p,taup
@@ -620,7 +628,7 @@ end
 function parallelmuffin(wlt::SharedArray{Float64,2},taut::SharedArray{Float64,4},t::SharedArray{Float64,4},rhot::Float64,
                         x::SharedArray{Float64,2},psf::Array{Float64,2},p::SharedArray{Float64,2},taup::SharedArray{Float64,2},
                         fty::Array{Float64,2},rhop::Float64,taus::Array{Float64,2},s::Array{Float64,2},rhos::Float64,
-                        mu::Float64,spatialwlt,μt::Float64,nspat::Int)
+                        mu::Float64,spatialwlt,μt::Float64,nspat::Int,mask::Array{Float64,2})
 
         wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
         b = fty + taup + rhop*p + taus + rhos*s
@@ -648,9 +656,18 @@ function parallelmuffin(wlt::SharedArray{Float64,2},taut::SharedArray{Float64,4}
 
 
         tmp = x-taup/rhop
-        p = max(0,tmp)
+        p = max(0,tmp).*mask
         taup = taup + rhop*(p-x)
 
     return wlt,x,t,taut,p,taup
 
+end
+
+function maskgen(x::Array{Float64,2},dim)
+    nxy = size(x)[1]
+    nxy_2 = int(round(nxy/2))
+    mask = zeros(nxy,nxy)
+    tmp = ones(nxy - 2*dim,nxy - 2*dim)
+    mask[ (dim+1:nxy -dim),(dim+1:nxy -dim)] = tmp
+    return mask
 end

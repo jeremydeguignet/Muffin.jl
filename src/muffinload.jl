@@ -118,6 +118,7 @@ function loadtools(nitermax,nfreq,nxy)
     toolst.errorrec = zeros(Float64,nxy,nxy,nfreq)
     toolst.errorest = zeros(Float64,nfreq)
     toolst.errorraw = zeros(Float64,nfreq)
+    toolst.mask2D = ones(Float64,nxy,nxy)
     return toolst
 end
 
