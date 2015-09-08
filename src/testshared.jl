@@ -473,12 +473,12 @@ freq15_tt = genshared4D(admmst.t[:,:,15,:],admmst.taut[:,:,15,:],nspat,a[15])
 
 
 #########################################################################
-# genshared3D(x,p,taup,wlt,psf,fty,s,taus)
+# genshared3D(x,p,taup,wlt,psf,fty,s,taus,listarr)
 
 
-
+listarr = {0 => 1}
 function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64,3},wlt::Array{Float64,3},psf::Array{Float64,3},
-                     fty::Array{Float64,3},s::Array{Float64,3},taus::Array{Float64,3})
+                     fty::Array{Float64,3},s::Array{Float64,3},taus::Array{Float64,3},listarr)
 
 
     Ndim = 8
@@ -490,33 +490,21 @@ function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64
     a = a[1:nfreq]
 
 
-    tabname = "freq"
+    tabname = "freq3d"
     toeval = ""
 
-    listarr = Dict{Any,Any}
-    listarr = {0 => 1}
     for z in 1:nfreq
           listarr[z] = SharedArray(Float64,nxy,nxy,Ndim,pids=[1,a[z]]);
     end
 
-
-
     for z in 1:nfreq
         toeval = string(toeval,string(tabname, "$z", "=", "similar(listarr[$z]);"))
-        println(toeval)
     end
-    println(" 1")
-    println(listarr[1])
-    println("2 ")
-    println(listarr[2])
-    println(" 3")
-    println(listarr[3])
-    println(" 4")
-    println(listarr[4])
-    println(parse(toeval))
-    eval(parse(toeval))
-    toeval = ""
 
+    eval(parse(toeval))
+
+
+    toeval = ""
     result = {0 => 1}
     for z in 1:nfreq
 
@@ -539,9 +527,60 @@ end
 
 
 #########################################################################
+# genshared4D(t,taut,listarr)
+
+
+listarr = {0 => 1}
+function genshared4D(t::Array{Float64,4},taut::Array{Float64,4},listarr)
+
+
+    Ndim = 2
+    nxy = size(t)[1]
+    nfreq = size(t)[3]
+    nspat = size(t)[4]
+
+    workers = nworkers()
+    a = int(repmat(linspace(2,workers+1,workers),int(ceil(nfreq/workers)),1))
+    a = a[1:nfreq]
+
+
+    tabname = "freq4d"
+    toeval = ""
+
+    for z in 1:nfreq
+          listarr[z] = SharedArray(Float64,nxy,nxy,Ndim,nspat,pids=[1,a[z]]);
+    end
+
+    for z in 1:nfreq
+        toeval = string(toeval,string(tabname, "$z", "=", "similar(listarr[$z]);"))
+    end
+
+
+    eval(parse(toeval))
+
+
+    toeval = ""
+    result = {0 => 1}
+    for z in 1:nfreq
+        for b in 1:nspat
+            result[1] = t[:,:,z,b]
+            result[2] = taut[:,:,z,b]
+
+            chaine = string("for nd in 1:Ndim;",string(tabname, "$z", "[:,:,nd,$b]","=","$result[nd];")," end;")
+
+            toeval = string(toeval,chaine)
+        end
+    end
+
+    eval(parse(toeval))
+
+end
+
+#########################################################################
 Ndim = 8
 nxy = 2
 nfreq = 4
+nspat = 8
 
 workers = nworkers()
 a = int(repmat(linspace(2,workers+1,workers),int(ceil(nfreq/workers)),1))
@@ -555,6 +594,8 @@ psf =randn(nxy,nxy,nfreq);
 fty = randn(nxy,nxy,nfreq);
 s =randn(nxy,nxy,nfreq);
 taus =randn(nxy,nxy,nfreq);
+t =randn(nxy,nxy,nfreq,nspat);
+taut =randn(nxy,nxy,nfreq,nspat);
 
 
 tabname = "freq"
