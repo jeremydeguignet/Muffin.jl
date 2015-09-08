@@ -5,6 +5,7 @@
 ####################################################################
 
 ################################
+# psfst, skyst, algost, admmst, toolst = muffin(nitermax = 30,dataobj="/home/jeremy/Julia/data/I_CL_RS_SKY_dirty.fits",dataobj="/home/jeremy/Julia/data/I_CL_RS_SKY_psf.fits");
 
 # psfst, skyst, algost, admmst, toolst = muffin(nitermax = 30);
 
