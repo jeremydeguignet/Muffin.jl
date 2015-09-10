@@ -160,6 +160,7 @@ const nxy = algost.nxy
 const fty = admmst.fty
 const nitermax = algost.nitermax
 const mask = toolst.mask2D
+const psfcbe = psfst.psfcbe
 
 
 spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
@@ -249,7 +250,7 @@ tic()
                                                            tabname1, "$z", "[:,:,6]",",","","$rhop,",
                                                            tabname1, "$z", "[:,:,8]",",","",
                                                            tabname1, "$z", "[:,:,7]",",","",
-                                                           "$rhos,", "$mu,", "$μt,", "$nspat,","$mask,","$(psfst.psfcbe)[:,:,$z]);")
+                                                           "$rhos,", "$mu,", "$μt,", "$nspat,","$mask,","$psfcbe[:,:,$z]);")
                 toeval = string(toeval,chaine)
             end
 
