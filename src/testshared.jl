@@ -160,6 +160,7 @@ const nxy = algost.nxy
 const fty = admmst.fty
 const nitermax = algost.nitermax
 const mask = toolst.mask2D
+# const mask = toolst.mask2D[1:10,1:10,:]
 
 
 
@@ -235,6 +236,7 @@ tic()
             toeval = ""
             for z in 1:nfreq
                 psfcbe = psfst.psfcbe[:,:,z]
+                # psfcbe = psfst.psfcbe[1:10:,1:10,z]
                 chaine = string(tabname1, "$z", "[:,:,4,:]",",","",
                                                            tabname1, "$z", "[:,:,1]",",","",
                                                            tabname2, "$z", "[:,:,1,:]",",","",
@@ -378,6 +380,14 @@ function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64
         chaine = string("for nd in 1:$Ndim;",string(tabname, "$z", "[:,:,nd]","=","$result[nd];")," end;")
         toeval = string(toeval,chaine)
     end
+    println(size(x))
+    println(size(p))
+    println(size(taup))
+    println(size(wlt))
+    println(size(fty))
+    println(size(s))
+    println(size(taus))
+    println(nxy," ",nfreq," ",a)
     eval(parse(toeval))
 end
 
