@@ -362,6 +362,9 @@ end
 
 function genshared4D(t::Array{Float64,4},taut::Array{Float64,4})
 
+    t = t[1:10,1:10,:,:]
+    taut = taut[1:10,1:10,:,:]
+
     listarr = {0 => 1}
     Ndim = 2
     nxy = size(t)[1]
