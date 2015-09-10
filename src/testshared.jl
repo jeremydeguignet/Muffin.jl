@@ -240,15 +240,15 @@ tic()
                                                            "parallelmuffin(",
                                                            tabname1, "$z", "[:,:,4,:]",",","",
                                                            tabname2, "$z", "[:,:,2,:]",",","",
-                                                           tabname2, "$z", "[:,:,1,:]",",","","$rhot",
+                                                           tabname2, "$z", "[:,:,1,:]",",","","$rhot,",
                                                            tabname1, "$z", "[:,:,1,:]",",","",
                                                            tabname1, "$z", "[:,:,5,:]",",","",
                                                            tabname1, "$z", "[:,:,2,:]",",","",
                                                            tabname1, "$z", "[:,:,3,:]",",","",
-                                                           tabname1, "$z", "[:,:,6,:]",",","","$rhop",
+                                                           tabname1, "$z", "[:,:,6,:]",",","","$rhop,",
                                                            tabname1, "$z", "[:,:,8,:]",",","",
                                                            tabname1, "$z", "[:,:,7,:]",",","",
-                                                           "$rhos", "$mu", "$spatialwlt", "$μt", "$nspat","$mask);")
+                                                           "$rhos,", "$mu,", "$spatialwlt,", "$μt,", "$nspat,","$mask);")
                 toeval = string(toeval,chaine)
             end
 
