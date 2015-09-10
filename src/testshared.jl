@@ -253,8 +253,8 @@ tic()
             end
 
 
-        println((chaine))
-        eval(parse(chaine))
+        println((toeval))
+        eval(parse(toeval))
 
 
 println("toto tata")
