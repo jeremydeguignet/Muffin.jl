@@ -159,7 +159,7 @@ const nspec = algost.nspec
 const nxy = algost.nxy
 const fty = admmst.fty
 const nitermax = algost.nitermax
-const mask = toolst.mask2D[1:10,1:10,:]
+const mask = toolst.mask2D
 
 
 
@@ -234,7 +234,7 @@ tic()
 
             toeval = ""
             for z in 1:nfreq
-                psfcbe = psfst.psfcbe[1:10,1:10,z]
+                psfcbe = psfst.psfcbe[:,:,z]
                 chaine = string(tabname1, "$z", "[:,:,4,:]",",","",
                                                            tabname1, "$z", "[:,:,1]",",","",
                                                            tabname2, "$z", "[:,:,1,:]",",","",
@@ -339,14 +339,14 @@ end
 function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64,3},wlt::Array{Float64,3},psf::Array{Float64,3},
                      fty::Array{Float64,3},s::Array{Float64,3},taus::Array{Float64,3})
 
-                     x  = x[1:10,1:10,:]
-                     p =p[1:10,1:10,:]
-                     taup = taup[1:10,1:10,:]
-                     wlt =wlt[1:10,1:10,:]
-                     psf =psf[1:10,1:10,:]
-                     fty =fty[1:10,1:10,:]
-                     s =s[1:10,1:10,:]
-                     taus = taus[1:10,1:10,:]
+                    #  x  = x[1:10,1:10,:]
+                    #  p =p[1:10,1:10,:]
+                    #  taup = taup[1:10,1:10,:]
+                    #  wlt =wlt[1:10,1:10,:]
+                    #  psf =psf[1:10,1:10,:]
+                    #  fty =fty[1:10,1:10,:]
+                    #  s =s[1:10,1:10,:]
+                    #  taus = taus[1:10,1:10,:]
 
     Ndim = 8
     listarr = {0 => 1}
@@ -389,8 +389,8 @@ end
 
 function genshared4D(t::Array{Float64,4},taut::Array{Float64,4})
 
-    t = t[1:10,1:10,:,:]
-    taut = taut[1:10,1:10,:,:]
+    # t = t[1:10,1:10,:,:]
+    # taut = taut[1:10,1:10,:,:]
 
     listarr = {0 => 1}
     Ndim = 2
