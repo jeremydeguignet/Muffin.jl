@@ -32,29 +32,19 @@ function loadsky_dirty(obj::ASCIIString,mypsf,nu::Array)
 end
 
 
-# function loadpsf(psf::ASCIIString,M::Int)
-#     psfst = init_PSF()
-#     psfcube = lecture(psf)
-#     d = round((size(psfcube)[1])/2)
-#     psfcube = psfcube[d-128:d+127,d-128:d+127,:]
-#     psfavg = cubeaverage(psfcube,M)
-#     psfst.nu, psfst.nu0 = cubefreq(psf,psfcube,M)
-#     psfst.mypsf = cropcubexy(psfavg,size(psfcube)[1])
-#     psfst.mypsfadj = flipdim(flipdim(psfst.mypsf,1),2)
-#     return psfst
-# end
-
 function loadpsf(psf::ASCIIString,M::Int)
     psfst = init_PSF()
     psfcube = lecture(psf)
     d = round((size(psfcube)[1])/2)
-    psfcube = psfcube[d-128:d+127,d-128:d+127,1:2]
+    psfcube = psfcube[d-128:d+127,d-128:d+127,:]
     psfavg = cubeaverage(psfcube,M)
     psfst.nu, psfst.nu0 = cubefreq(psf,psfcube,M)
     psfst.mypsf = cropcubexy(psfavg,size(psfcube)[1])
     psfst.mypsfadj = flipdim(flipdim(psfst.mypsf,1),2)
     return psfst
 end
+
+
 
 function loadpsf_dirty(psf::ASCIIString)
     psfst = init_PSF_dirty()

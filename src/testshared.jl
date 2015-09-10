@@ -169,10 +169,12 @@ workers = nworkers()
 a = int(repmat(linspace(2,workers+1,workers),int(ceil(nfreq/workers)),1))
 a = a[1:nfreq]
 
-println("4D SharedArrays init")
-genshared4D(admmst.t,admmst.taut)
+
 println("3D SharedArrays init")
 genshared3D(admmst.x,admmst.p,admmst.taup,admmst.wlt,psfst.mypsf,admmst.fty,admmst.s,admmst.taus)
+println("4D SharedArrays init")
+genshared4D(admmst.t,admmst.taut)
+
 
 
 loop = true
@@ -340,6 +342,7 @@ function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64
         result[8] = taus[:,:,z]
         chaine = string("for nd in 1:$Ndim;",string(tabname, "$z", "[:,:,nd]","=","$result[nd];")," end;")
         toeval = string(toeval,chaine)
+        println("SharedArray $z")
     end
     eval(parse(toeval))
 end
