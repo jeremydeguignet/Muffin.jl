@@ -248,7 +248,7 @@ tic()
                                                            tabname1, "$z", "[:,:,6,:]",",","","$rhop,",
                                                            tabname1, "$z", "[:,:,8,:]",",","",
                                                            tabname1, "$z", "[:,:,7,:]",",","",
-                                                           "$rhos,", "$mu,", "", "$μt,", "$nspat,","$mask);")
+                                                           "$rhos,", "$mu,", "$μt,", "$nspat,","$mask);")
                 toeval = string(toeval,chaine)
             end
 
@@ -473,3 +473,70 @@ end
 # end
 # eval(parse(toeval))
 #########################################################################
+
+
+function parallelmuffin(wlt::Array{Float64,2},taut::Array{Float64,4},t::Array{Float64,4},rhot::Float64,
+                        x::Array{Float64,2},psf::Array{Float64,2},p::Array{Float64,2},taup::Array{Float64,2},
+                        fty::Array{Float64,2},rhop::Float64,taus::Array{Float64,2},s::Array{Float64,2},rhos::Float64,
+                        mu::Float64,spatialwlt,μt::Float64,nspat::Int,mask::Array{Float64,2},psfcbe::Array{Complex64,2})
+
+spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8]
+        wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
+        b = fty + taup + rhop*p + taus + rhos*s
+        wlt_b = wlt + b
+
+        x = real(ifft(psfcbe.*fft(wlt_b)))
+
+        # tmp1 = 0.0
+        # tmp2 = zeros(Float64,nxy,nxy)
+        for b in 1:nspat
+                    hx = dwt(x,wavelet(spatialwlt[b]))
+                    tmp = hx - taut[:,:,1,b]/rhot
+                    t[:,:,1,b] = prox_u(tmp,μt/rhot)
+                    taut[:,:,1,b] = taut[:,:,1,b] + rhot*(t[:,:,1,b]-hx)
+                    # tmp1 = vecnorm([tmp2 (hx-(t)[:,:,z,b])],2)
+                    # tmp2 = (hx-(t)[:,:,z,b])
+        end
+        # tmp2[:] = 0
+
+
+        tmp = x-taup/rhop
+        p = max(0,tmp).*mask
+        taup = taup + rhop*(p-x)
+
+    return wlt,x,t,taut,p,taup
+
+end
+
+function parallelmuffin(wlt::SharedArray{Float64,2},taut::SharedArray{Float64,4},t::SharedArray{Float64,4},rhot::Float64,
+                        x::SharedArray{Float64,2},psf::Array{Float64,2},p::SharedArray{Float64,2},taup::SharedArray{Float64,2},
+                        fty::Array{Float64,2},rhop::Float64,taus::Array{Float64,2},s::Array{Float64,2},rhos::Float64,
+                        mu::Float64,spatialwlt,μt::Float64,nspat::Int,mask::Array{Float64,2},psfcbe::Array{Complex64,2})
+
+spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8]
+        wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
+        b = fty + taup + rhop*p + taus + rhos*s
+        wlt_b = wlt + b
+
+        x = real(ifft(psfcbe.*fft(wlt_b)))
+
+        # tmp1 = 0.0
+        # tmp2 = zeros(Float64,nxy,nxy)
+        for b in 1:nspat
+                    hx = dwt(x,wavelet(spatialwlt[b]))
+                    tmp = hx - taut[:,:,1,b]/rhot
+                    t[:,:,1,b] = prox_u(tmp,μt/rhot)
+                    taut[:,:,1,b] = taut[:,:,1,b] + rhot*(t[:,:,1,b]-hx)
+                    # tmp1 = vecnorm([tmp2 (hx-(t)[:,:,z,b])],2)
+                    # tmp2 = (hx-(t)[:,:,z,b])
+        end
+        # tmp2[:] = 0
+
+
+        tmp = x-taup/rhop
+        p = max(0,tmp).*mask
+        taup = taup + rhop*(p-x)
+
+    return wlt,x,t,taut,p,taup
+
+end

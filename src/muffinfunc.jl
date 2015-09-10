@@ -599,10 +599,6 @@ function parallelmuffin(wlt::Array{Float64,2},taut::Array{Float64,4},t::Array{Fl
                         fty::Array{Float64,2},rhop::Float64,taus::Array{Float64,2},s::Array{Float64,2},rhos::Float64,
                         mu::Float64,spatialwlt,μt::Float64,nspat::Int,mask::Array{Float64,2},psfcbe::Array{Complex64,2})
 
-
-        spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
-
-
         wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
         b = fty + taup + rhop*p + taus + rhos*s
         wlt_b = wlt + b
@@ -635,10 +631,6 @@ function parallelmuffin(wlt::SharedArray{Float64,2},taut::SharedArray{Float64,4}
                         fty::Array{Float64,2},rhop::Float64,taus::Array{Float64,2},s::Array{Float64,2},rhos::Float64,
                         mu::Float64,spatialwlt,μt::Float64,nspat::Int,mask::Array{Float64,2},psfcbe::Array{Complex64,2})
 
-
-        spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
-
-        
         wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
         b = fty + taup + rhop*p + taus + rhos*s
         wlt_b = wlt + b
