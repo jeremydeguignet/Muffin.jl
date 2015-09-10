@@ -210,6 +210,7 @@ tic()
 
             tabname1 = "freq3d"
             tabname2 = "freq4d"
+            toto = "psfcbe"
 
 
             # chaine = string("for z in 1:$nfreq;",string(tabname1, "$z", "[:,:,4,:]",",","",
@@ -251,7 +252,7 @@ tic()
                                                            tabname1, "$z", "[:,:,8]",",","",
                                                            tabname1, "$z", "[:,:,7]",",","",
                                                            "$rhos,", "$mu,", "$μt,", "$nspat,","$mask,",
-                                                           psfcbe, "[:,:,$z]",",","",");")
+                                                           toto, "[:,:,$z]",",","",");")
                 toeval = string(toeval,chaine)
             end
 
