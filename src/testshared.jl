@@ -4,7 +4,7 @@
 
 function muffin_SA(;folder="",dataobj="",datapsf="",nitermax = 500, rhop = 1,
             rhot = 5, rhov = 2, rhos = 1, μt = 5e-1, μv = 1e-0, mueps = 1e-3,
-            bw = 1, ws="",parallel="",mask="")
+            bw = 25, ws="",parallel="",mask="")
 
 println("")
 println("MUFFIN initialisation")
@@ -342,8 +342,8 @@ function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64
         result[8] = taus[:,:,z]
         chaine = string("for nd in 1:$Ndim;",string(tabname, "$z", "[:,:,nd]","=","$result[nd];")," end;")
         toeval = string(toeval,chaine)
-        println("SharedArray $z")
     end
+    println(parse(toeval))
     eval(parse(toeval))
 end
 
