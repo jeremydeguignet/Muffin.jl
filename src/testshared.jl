@@ -253,7 +253,7 @@ tic()
                 toeval = string(toeval,chaine)
             end
 
-
+            println(parse(toeval))
         eval(parse(toeval))
 
 
