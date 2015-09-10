@@ -312,14 +312,14 @@ end
 function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64,3},wlt::Array{Float64,3},psf::Array{Float64,3},
                      fty::Array{Float64,3},s::Array{Float64,3},taus::Array{Float64,3})
 
-                     x[:,:,:]  = x[1:10,1:10,:] 
-                     p[:,:,:] =p[1:10,1:10,:]
-                     taup[:,:,:] = taup[1:10,1:10,:]
-                     wlt[:,:,:] =wlt[1:10,1:10,:]
-                     psf[:,:,:] =psf[1:10,1:10,:]
-                     fty[:,:,:] =fty[1:10,1:10,:]
-                     s[:,:,:] =s[1:10,1:10,:]
-                     taus[:,:,:] = taus[1:10,1:10,:]
+                     x  = x[1:10,1:10,:]
+                     p =p[1:10,1:10,:]
+                     taup = taup[1:10,1:10,:]
+                     wlt =wlt[1:10,1:10,:]
+                     psf =psf[1:10,1:10,:]
+                     fty =fty[1:10,1:10,:]
+                     s =s[1:10,1:10,:]
+                     taus = taus[1:10,1:10,:]
 
     Ndim = 8
     listarr = {0 => 1}
