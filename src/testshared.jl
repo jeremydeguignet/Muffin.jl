@@ -209,23 +209,23 @@ tic()
             tabname1 = "freq3d"
             tabname2 = "freq4d"
 
-                chaine = string("for z in 1:nfreq;",string(tabname1, "$z", "[:,:,4,:]",",","",
-                                                           tabname1, "$z", "[:,:,1,:]",",","",
-                                                           tabname2, "$z", "[:,:,1,:]",",","",
-                                                           tabname2, "$z", "[:,:,2,:]",",","",
-                                                           tabname1, "$z", "[:,:,2,:]",",","",
-                                                           tabname1, "$z", "[:,:,3,:]",",","","=",
+                chaine = string("for z in 1:nfreq;",string(tabname1, "z", "[:,:,4,:]",",","",
+                                                           tabname1, "z", "[:,:,1,:]",",","",
+                                                           tabname2, "z", "[:,:,1,:]",",","",
+                                                           tabname2, "z", "[:,:,2,:]",",","",
+                                                           tabname1, "z", "[:,:,2,:]",",","",
+                                                           tabname1, "z", "[:,:,3,:]",",","","=",
                                                            "parallelmuffin(",
-                                                           tabname1, "$z", "[:,:,4,:]",",","",
-                                                           tabname2, "$z", "[:,:,2,:]",",","",
-                                                           tabname2, "$z", "[:,:,1,:]",",","","rhot",
-                                                           tabname1, "$z", "[:,:,1,:]",",","",
-                                                           tabname1, "$z", "[:,:,5,:]",",","",
-                                                           tabname1, "$z", "[:,:,2,:]",",","",
-                                                           tabname1, "$z", "[:,:,3,:]",",","",
-                                                           tabname1, "$z", "[:,:,6,:]",",","","rhop",
-                                                           tabname1, "$z", "[:,:,8,:]",",","",
-                                                           tabname1, "$z", "[:,:,7,:]",",","",
+                                                           tabname1, "z", "[:,:,4,:]",",","",
+                                                           tabname2, "z", "[:,:,2,:]",",","",
+                                                           tabname2, "z", "[:,:,1,:]",",","","rhot",
+                                                           tabname1, "z", "[:,:,1,:]",",","",
+                                                           tabname1, "z", "[:,:,5,:]",",","",
+                                                           tabname1, "z", "[:,:,2,:]",",","",
+                                                           tabname1, "z", "[:,:,3,:]",",","",
+                                                           tabname1, "z", "[:,:,6,:]",",","","rhop",
+                                                           tabname1, "z", "[:,:,8,:]",",","",
+                                                           tabname1, "z", "[:,:,7,:]",",","",
                                                            "rhos", "mu", "spatialwlt", "μt", "nspat","mask);")," end;")
 
                 toeval = "chaine"
@@ -233,7 +233,7 @@ tic()
         eval(parse(toeval))
 
 
-println(eval(parse(toeval)))
+println("toto tata")
         # for z in 1:nfreq
         #
         #     freq3d$z[:,:,4,:],freq3d$z[:,:,1,:],freq4d$z[:,:,1,:],freq4d$z[:,:,2,:],freq3d$z[:,:,2,:],freq3d$z[:,:,3,:] =
