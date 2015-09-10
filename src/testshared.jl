@@ -171,7 +171,7 @@ a = a[1:nfreq]
 
 println("4D SharedArrays init")
 genshared4D(admmst.t,admmst.taut)
-println("3D SharedArrays init"
+println("3D SharedArrays init")
 genshared3D(admmst.x,admmst.p,admmst.taup,admmst.wlt,psfst.mypsf,admmst.fty,admmst.s,admmst.taus)
 
 
