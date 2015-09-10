@@ -21,7 +21,7 @@ module Muffin
     using GHF
 
 
-    export muffin,savedata,muffin_DA#,muffin_SA
+    export muffin,savedata,muffin_DA,muffin_SA
 
     include("muffintype.jl")
 
@@ -32,7 +32,7 @@ module Muffin
     include("muffinload.jl")
     include("savedata.jl")
     include("darraytest.jl")
-    # include("testshared.jl")
+    include("testshared.jl")
 
 
 end

@@ -14,7 +14,7 @@ println("MUFFIN initialisation")
                  ##################################
 
 
-    if typeof(dataobj) == ASCIIString
+    if isempty(dataobj) == false
         if dataobj == "m31"
             psf = "data/meerkat_m30_25pix.psf.fits"
             obj = "data/M31.fits"
@@ -50,6 +50,9 @@ println("MUFFIN initialisation")
     elseif isempty(dataobj)
         psf = "data/meerkat_m30_25pix.psf.fits"
         obj = "data/M31.fits"
+        tmp = string(Pkg.dir("Muffin"))
+        psf = string(tmp,tmp[1],psf)
+        obj = string(tmp,tmp[1],obj)
     end
 
 println("psf :"," ",psf)
@@ -114,11 +117,16 @@ end
         toolst = loadtools(nitermax,nfreq,nxy)
     end
 
-    println(typeof(mask))
+
     if typeof(mask) == Int64
         toolst.mask2D = maskgen(admmst.x[:,:,1],mask)
         println(sum(toolst.mask2D)/4)
     end
+
+
+    psfst.psfcbe = psfcbe_init(psfst.psfcbe,admmst.x,psfst.mypsf,admmst.mu)
+
+
 
 
     ##################################
@@ -200,8 +208,7 @@ function muffinadmm(psfst, skyst, algost, admmst, toolst)
                                             parallelmuffin(admmst.wlt[:,:,z], admmst.taut[:,:,z,:], admmst.t[:,:,z,:], rhot, admmst.x[:,:,z],
                                             psfst.mypsf[:,:,z], admmst.p[:,:,z], admmst.taup[:,:,z],
                                             fty[:,:,z], rhop, admmst.taus[:,:,z], admmst.s[:,:,z], rhos, admmst.mu, spatialwlt,
-                                            μt, nspat,mask)
-
+                                            μt, nspat, mask, psfst.psfcbe[:,:,z])
             end
 
 
@@ -590,18 +597,12 @@ end
 function parallelmuffin(wlt::Array{Float64,2},taut::Array{Float64,4},t::Array{Float64,4},rhot::Float64,
                         x::Array{Float64,2},psf::Array{Float64,2},p::Array{Float64,2},taup::Array{Float64,2},
                         fty::Array{Float64,2},rhop::Float64,taus::Array{Float64,2},s::Array{Float64,2},rhos::Float64,
-                        mu::Float64,spatialwlt,μt::Float64,nspat::Int,mask::Array{Float64,2})
+                        mu::Float64,spatialwlt,μt::Float64,nspat::Int,mask::Array{Float64,2},psfcbe::Array{Complex64,2})
 
         wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
         b = fty + taup + rhop*p + taus + rhos*s
         wlt_b = wlt + b
 
-        nxy = (size(x))[1]
-        nxypsf = (size(psf))[1]
-        psfcbe = zeros(Complex64,nxy,nxy)
-        psfpad = zeros(Float64,nxy,nxy)
-        psfpad[1:nxypsf,1:nxypsf] = psf[:,:]
-        psfcbe = 1./(abs(fft(psfpad)).^2+mu)
         x = real(ifft(psfcbe.*fft(wlt_b)))
 
         # tmp1 = 0.0
@@ -628,18 +629,12 @@ end
 function parallelmuffin(wlt::SharedArray{Float64,2},taut::SharedArray{Float64,4},t::SharedArray{Float64,4},rhot::Float64,
                         x::SharedArray{Float64,2},psf::Array{Float64,2},p::SharedArray{Float64,2},taup::SharedArray{Float64,2},
                         fty::Array{Float64,2},rhop::Float64,taus::Array{Float64,2},s::Array{Float64,2},rhos::Float64,
-                        mu::Float64,spatialwlt,μt::Float64,nspat::Int,mask::Array{Float64,2})
+                        mu::Float64,spatialwlt,μt::Float64,nspat::Int,mask::Array{Float64,2},psfcbe::Array{Complex64,2})
 
         wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
         b = fty + taup + rhop*p + taus + rhos*s
         wlt_b = wlt + b
 
-        nxy = (size(x))[1]
-        nxypsf = (size(psf))[1]
-        psfcbe = zeros(Complex64,nxy,nxy)
-        psfpad = zeros(Float64,nxy,nxy)
-        psfpad[1:nxypsf,1:nxypsf] = psf[:,:]
-        psfcbe = 1./(abs(fft(psfpad)).^2+mu)
         x = real(ifft(psfcbe.*fft(wlt_b)))
 
         # tmp1 = 0.0
@@ -670,4 +665,17 @@ function maskgen(x::Array{Float64,2},dim)
     tmp = ones(nxy - 2*dim,nxy - 2*dim)
     mask[ (dim+1:nxy -dim),(dim+1:nxy -dim)] = tmp
     return mask
+end
+
+function psfcbe_init(psfcbe,x::Array{Float64,3},psf::Array{Float64,3},mu)
+    nxy = (size(x))[1]
+    nxypsf = (size(psf))[1]
+    nfreq = (size(x))[3]
+    psfpad = zeros(Float64,nxy,nxy,nfreq)
+    psfcbe = zeros(Complex64,nxy,nxy,nfreq)
+    for z in 1:nfreq
+        psfpad[1:nxypsf,1:nxypsf,z] = psf[:,:,z]
+        psfcbe[:,:,z] = 1./(abs(fft(psfpad[:,:,z])).^2 + mu)
+    end
+    return psfcbe
 end

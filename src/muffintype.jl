@@ -5,6 +5,7 @@ type PSF
     nu0::Float64
     mypsf::Array{Float64}
     mypsfadj::Array{Float64}
+    psfcbe::Array{Complex64}
 end
 
 type SKY
@@ -23,6 +24,7 @@ type PSF_dirty
     nu0::Float64
     mypsf::Array{Float64}
     mypsfadj::Array{Float64}
+    psfcbe::Array{Complex64}
 end
 
 type SKY_dirty
@@ -120,7 +122,7 @@ end
 ####################################
 ####################################
 function init_PSF()
-    return PSF([],0.,[],[])
+    return PSF([],0.,[],[],[])
 end
 function init_SKY()
     return SKY([],[],0.,0.,[],[],[])
@@ -128,7 +130,7 @@ end
 ####################################
 ####################################
 function init_PSF_dirty()
-    return PSF_dirty([],0.,[],[])
+    return PSF_dirty([],0.,[],[],[])
 end
 function init_SKY_dirty()
     return SKY_dirty([],[],[])
