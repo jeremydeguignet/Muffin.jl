@@ -469,7 +469,7 @@ function lecture(directory::ASCIIString)
     data = float64(read(file[1]))
     close(file)
     data = squeeze(data,find(([size(data)...].==1)))
-    data = data[:,:,1:2]
+    data = data[:,:,1:5]
 
     return data
 end
