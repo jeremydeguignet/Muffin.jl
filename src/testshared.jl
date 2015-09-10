@@ -160,7 +160,7 @@ const nxy = algost.nxy
 const fty = admmst.fty
 const nitermax = algost.nitermax
 const mask = toolst.mask2D
-const psfcbe = psfst.psfcbe
+
 
 
 spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
@@ -211,7 +211,7 @@ tic()
             tabname1 = "freq3d"
             tabname2 = "freq4d"
             toto = "psfcbe"
-
+            psfcbe = psfst.psfcbe
 
             # chaine = string("for z in 1:$nfreq;",string(tabname1, "$z", "[:,:,4,:]",",","",
             #                                            tabname1, "$z", "[:,:,1,:]",",","",
