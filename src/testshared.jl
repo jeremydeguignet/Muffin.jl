@@ -228,9 +228,9 @@ tic()
                                                            tabname1, "z", "[:,:,7,:]",",","",
                                                            "rhos", "mu", "spatialwlt", "μt", "nspat","mask);")," end;")
 
-                toeval = "chaine"
 
-        eval(parse(toeval))
+
+        eval(parse(chaine))
 
 
 println("toto tata")
