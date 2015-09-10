@@ -312,6 +312,14 @@ end
 function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64,3},wlt::Array{Float64,3},psf::Array{Float64,3},
                      fty::Array{Float64,3},s::Array{Float64,3},taus::Array{Float64,3})
 
+                     x[:,:,:]  = x[1:10,1:10,:] 
+                     p[:,:,:] =p[1:10,1:10,:]
+                     taup[:,:,:] = taup[1:10,1:10,:]
+                     wlt[:,:,:] =wlt[1:10,1:10,:]
+                     psf[:,:,:] =psf[1:10,1:10,:]
+                     fty[:,:,:] =fty[1:10,1:10,:]
+                     s[:,:,:] =s[1:10,1:10,:]
+                     taus[:,:,:] = taus[1:10,1:10,:]
 
     Ndim = 8
     listarr = {0 => 1}
@@ -340,14 +348,6 @@ function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64
         result[6] = fty[:,:,z]
         result[7] = s[:,:,z]
         result[8] = taus[:,:,z]
-        println(size(result[1]))
-        println(size(result[2]))
-        println(size(result[3]))
-        println(size(result[4]))
-        println(size(result[5]))
-        println(size(result[6]))
-        println(size(result[7]))
-        println(size(result[8]))
         chaine = string("for nd in 1:$Ndim;",string(tabname, "$z", "[:,:,nd]","=","$result[nd];")," end;")
         toeval = string(toeval,chaine)
     end
