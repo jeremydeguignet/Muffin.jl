@@ -159,8 +159,8 @@ const nspec = algost.nspec
 const nxy = algost.nxy
 const fty = admmst.fty
 const nitermax = algost.nitermax
-# const mask = toolst.mask2D
-const mask = toolst.mask2D[1:10,1:10,:]
+const mask = toolst.mask2D
+# const mask = toolst.mask2D[1:10,1:10,:]
 
 
 
@@ -235,8 +235,8 @@ tic()
 
             toeval = ""
             for z in 1:nfreq
-                # psfcbe = psfst.psfcbe[:,:,z]
-                psfcbe = psfst.psfcbe[1:10,1:10,z]
+                psfcbe = psfst.psfcbe[:,:,z]
+                # psfcbe = psfst.psfcbe[1:10,1:10,z]
                 chaine = string(tabname1, "$z", "[:,:,4,:]",",","",
                                                            tabname1, "$z", "[:,:,1]",",","",
                                                            tabname2, "$z", "[:,:,1,:]",",","",
@@ -258,7 +258,7 @@ tic()
                                                            "$psfcbe",");")
                 toeval = string(toeval,chaine)
             end
-
+println("toto")
         eval(parse(toeval))
 
 
@@ -341,14 +341,14 @@ end
 function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64,3},wlt::Array{Float64,3},psf::Array{Float64,3},
                      fty::Array{Float64,3},s::Array{Float64,3},taus::Array{Float64,3})
 
-                     x  = x[1:10,1:10,:]
-                     p =p[1:10,1:10,:]
-                     taup = taup[1:10,1:10,:]
-                     wlt =wlt[1:10,1:10,:]
-                     psf =psf[1:10,1:10,:]
-                     fty =fty[1:10,1:10,:]
-                     s =s[1:10,1:10,:]
-                     taus = taus[1:10,1:10,:]
+                    #  x  = x[1:10,1:10,:]
+                    #  p =p[1:10,1:10,:]
+                    #  taup = taup[1:10,1:10,:]
+                    #  wlt =wlt[1:10,1:10,:]
+                    #  psf =psf[1:10,1:10,:]
+                    #  fty =fty[1:10,1:10,:]
+                    #  s =s[1:10,1:10,:]
+                    #  taus = taus[1:10,1:10,:]
 
     Ndim = 8
     listarr = {0 => 1}
@@ -377,8 +377,8 @@ function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64
         result[6] = fty[:,:,z]
         result[7] = s[:,:,z]
         result[8] = taus[:,:,z]
-        chaine = string("for nd in 1:$Ndim;",string(tabname, "$z", "[:,:,nd]","=","$result[nd];")," end;")
-        toeval = string(toeval,chaine)
+        result[8+z] = string("for nd in 1:$Ndim;",string(tabname, "$z", "[:,:,nd]","=","$result[nd];")," end;")
+
     end
     println(size(x))
     println(size(p))
@@ -388,7 +388,12 @@ function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64
     println(size(s))
     println(size(taus))
     println(nxy," ",nfreq," ",a)
-    eval(parse(toeval))
+
+    for z in 1:nfreq
+        println(z)
+        eval(parse(result[8+z]))
+    end
+
 end
 
 
@@ -399,8 +404,8 @@ end
 
 function genshared4D(t::Array{Float64,4},taut::Array{Float64,4})
 
-    t = t[1:10,1:10,:,:]
-    taut = taut[1:10,1:10,:,:]
+    # t = t[1:10,1:10,:,:]
+    # taut = taut[1:10,1:10,:,:]
 
     listarr = {0 => 1}
     Ndim = 2
@@ -553,3 +558,57 @@ spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8]
     return wlt,x,t,taut,p,taup
 
 end
+
+
+# function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64,3},wlt::Array{Float64,3},psf::Array{Float64,3},
+#                      fty::Array{Float64,3},s::Array{Float64,3},taus::Array{Float64,3})
+#
+#                      x  = x[1:10,1:10,:]
+#                      p =p[1:10,1:10,:]
+#                      taup = taup[1:10,1:10,:]
+#                      wlt =wlt[1:10,1:10,:]
+#                      psf =psf[1:10,1:10,:]
+#                      fty =fty[1:10,1:10,:]
+#                      s =s[1:10,1:10,:]
+#                      taus = taus[1:10,1:10,:]
+#
+#     Ndim = 8
+#     listarr = {0 => 1}
+#     nxy = size(x)[1]
+#     nfreq = size(x)[3]
+#     workers = nworkers()
+#     a = int(repmat(linspace(2,workers+1,workers),int(ceil(nfreq/workers)),1))
+#     a = a[1:nfreq]
+#
+#     tabname = "freq3d"
+#     toeval = ""
+#
+#     for z in 1:nfreq
+#         toeval = string(toeval,string(tabname, "$z", "=", "SharedArray(Float64,$nxy,$nxy,$Ndim,pids=[1,$a[$z]]);"))
+#     end
+#     eval(parse(toeval))
+#
+#     toeval = ""
+#     result = {0 => 1}
+#     for z in 1:nfreq
+#         result[1] = x[:,:,z]
+#         result[2] = p[:,:,z]
+#         result[3] = taup[:,:,z]
+#         result[4] = wlt[:,:,z]
+#         result[5] = psf[:,:,z]
+#         result[6] = fty[:,:,z]
+#         result[7] = s[:,:,z]
+#         result[8] = taus[:,:,z]
+#         chaine = string("for nd in 1:$Ndim;",string(tabname, "$z", "[:,:,nd]","=","$result[nd];")," end;")
+#         toeval = string(toeval,chaine)
+#     end
+#     println(size(x))
+#     println(size(p))
+#     println(size(taup))
+#     println(size(wlt))
+#     println(size(fty))
+#     println(size(s))
+#     println(size(taus))
+#     println(nxy," ",nfreq," ",a)
+#     eval(parse(toeval))
+# end
