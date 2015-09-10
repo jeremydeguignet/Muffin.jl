@@ -340,10 +340,17 @@ function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64
         result[6] = fty[:,:,z]
         result[7] = s[:,:,z]
         result[8] = taus[:,:,z]
+        println(size(result[1]))
+        println(size(result[2]))
+        println(size(result[3]))
+        println(size(result[4]))
+        println(size(result[5]))
+        println(size(result[6]))
+        println(size(result[7]))
+        println(size(result[8]))
         chaine = string("for nd in 1:$Ndim;",string(tabname, "$z", "[:,:,nd]","=","$result[nd];")," end;")
         toeval = string(toeval,chaine)
     end
-    println(parse(toeval))
     eval(parse(toeval))
 end
 
