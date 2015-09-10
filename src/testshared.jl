@@ -248,7 +248,7 @@ tic()
                                                            tabname1, "$z", "[:,:,6,:]",",","","$rhop,",
                                                            tabname1, "$z", "[:,:,8,:]",",","",
                                                            tabname1, "$z", "[:,:,7,:]",",","",
-                                                           "$rhos,", "$mu,", "[WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]", "$μt,", "$nspat,","$mask);")
+                                                           "$rhos,", "$mu,", [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar], "$μt,", "$nspat,","$mask);")
                 toeval = string(toeval,chaine)
             end
 
