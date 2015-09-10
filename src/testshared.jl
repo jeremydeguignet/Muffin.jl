@@ -249,12 +249,11 @@ tic()
                                                            tabname1, "$z", "[:,:,6]",",","","$rhop,",
                                                            tabname1, "$z", "[:,:,8]",",","",
                                                            tabname1, "$z", "[:,:,7]",",","",
-                                                           "$rhos,", "$mu,", "$μt,", "$nspat,","$mask,","$psfst.psfcbe[:,:,$z]);")
+                                                           "$rhos,", "$mu,", "$μt,", "$nspat,","$mask,","$((psfst.psfcbe)[:,:,$z]));")
                 toeval = string(toeval,chaine)
             end
 
 
-        println((toeval))
         eval(parse(toeval))
 
 
