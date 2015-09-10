@@ -159,7 +159,7 @@ const nspec = algost.nspec
 const nxy = algost.nxy
 const fty = admmst.fty
 const nitermax = algost.nitermax
-const mask = toolst.mask2D
+const mask = toolst.mask2D[1:10,1:10,:]
 
 
 
@@ -257,7 +257,6 @@ tic()
                 toeval = string(toeval,chaine)
             end
 
-            println((toeval))
         eval(parse(toeval))
 
 
