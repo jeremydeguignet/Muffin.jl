@@ -211,7 +211,7 @@ tic()
             tabname1 = "freq3d"
             tabname2 = "freq4d"
             toto = "psfcbe"
-            psfcbe = psfst.psfcbe
+        
 
             # chaine = string("for z in 1:$nfreq;",string(tabname1, "$z", "[:,:,4,:]",",","",
             #                                            tabname1, "$z", "[:,:,1,:]",",","",
@@ -234,6 +234,7 @@ tic()
 
             toeval = ""
             for z in 1:nfreq
+                psfcbe = psfst.psfcbe[:,:,z]
                 chaine = string(tabname1, "$z", "[:,:,4,:]",",","",
                                                            tabname1, "$z", "[:,:,1]",",","",
                                                            tabname2, "$z", "[:,:,1,:]",",","",
@@ -252,7 +253,7 @@ tic()
                                                            tabname1, "$z", "[:,:,8]",",","",
                                                            tabname1, "$z", "[:,:,7]",",","",
                                                            "$rhos,", "$mu,", "$μt,", "$nspat,","$mask,",
-                                                           toto, "[:,:,$z]",");")
+                                                           "$psfcbe",");")
                 toeval = string(toeval,chaine)
             end
 
