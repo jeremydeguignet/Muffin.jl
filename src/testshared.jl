@@ -120,6 +120,7 @@ if typeof(mask) == Int64
     println(sum(toolst.mask2D)/4)
 end
 
+psfst.psfcbe = psfcbe_init(psfst.psfcbe,admmst.x,psfst.mypsf,admmst.mu)
 
 ##################################
 
