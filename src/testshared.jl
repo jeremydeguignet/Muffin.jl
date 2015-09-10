@@ -229,7 +229,7 @@ tic()
                                                            "$rhos", "$mu", "$spatialwlt", "$μt", "$nspat","$mask);")," end;")
 
 
-        println(parse(chaine))
+        println((chaine))
         eval(parse(chaine))
 
 
