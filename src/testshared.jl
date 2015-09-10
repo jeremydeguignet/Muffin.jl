@@ -215,7 +215,7 @@ tic()
                                                            tabname2, "z", "[:,:,2,:]",",","",
                                                            tabname1, "z", "[:,:,2,:]",",","",
                                                            tabname1, "z", "[:,:,3,:]",",","","=",
-                                                           "$parallelmuffin(",
+                                                           "parallelmuffin(",
                                                            tabname1, "z", "[:,:,4,:]",",","",
                                                            tabname2, "z", "[:,:,2,:]",",","",
                                                            tabname2, "z", "[:,:,1,:]",",","","$rhot",
