@@ -160,7 +160,7 @@ const nxy = algost.nxy
 const fty = admmst.fty
 const nitermax = algost.nitermax
 const mask = toolst.mask2D
-# const mask = toolst.mask2D[1:10,1:10,:]
+# const mask = toolst.mask2D[1:2,1:2,:]
 
 
 
@@ -174,9 +174,9 @@ a = a[1:nfreq]
 
 
 println("3D SharedArrays init")
-genshared3D(admmst.x,admmst.p,admmst.taup,admmst.wlt,psfst.mypsf,admmst.fty,admmst.s,admmst.taus)
+cube3D = genshared3D(admmst.x,admmst.p,admmst.taup,admmst.wlt,psfst.mypsf,admmst.fty,admmst.s,admmst.taus)
 println("4D SharedArrays init")
-genshared4D(admmst.t,admmst.taut)
+cube4D = genshared4D(admmst.t,admmst.taut)
 
 
 
@@ -198,85 +198,80 @@ tic()
                 "          "," ","|"," ","         "," "," |"," ","          "," ","|"," ")
         # println("ADMM iteration: $niter")
 
-######################################
-        # for z in 1:nfreq
-        #     admmst.wlt[:,:,z],admmst.x[:,:,z],admmst.t[:,:,z,:],admmst.taut[:,:,z,:],admmst.p[:,:,z],admmst.taup[:,:,z] =
-        #                                 parallelmuffin(admmst.wlt[:,:,z], admmst.taut[:,:,z,:], admmst.t[:,:,z,:], rhot, admmst.x[:,:,z],
-        #                                 psfst.mypsf[:,:,z], admmst.p[:,:,z], admmst.taup[:,:,z],
-        #                                 fty[:,:,z], rhop, admmst.taus[:,:,z], admmst.s[:,:,z], rhos, admmst.mu, spatialwlt,
-        #                                 μt, nspat,mask)
-        #
-        # end
-
-
             tabname1 = "freq3d"
             tabname2 = "freq4d"
 
-
-
-            # chaine = string("for z in 1:$nfreq;",string(tabname1, "$z", "[:,:,4,:]",",","",
-            #                                            tabname1, "$z", "[:,:,1,:]",",","",
-            #                                            tabname2, "$z", "[:,:,1,:]",",","",
-            #                                            tabname2, "$z", "[:,:,2,:]",",","",
-            #                                            tabname1, "$z", "[:,:,2,:]",",","",
-            #                                            tabname1, "$z", "[:,:,3,:]",",","","=",
-            #                                            "parallelmuffin(",
-            #                                            tabname1, "$z", "[:,:,4,:]",",","",
-            #                                            tabname2, "$z", "[:,:,2,:]",",","",
-            #                                            tabname2, "$z", "[:,:,1,:]",",","","$rhot",
-            #                                            tabname1, "$z", "[:,:,1,:]",",","",
-            #                                            tabname1, "$z", "[:,:,5,:]",",","",
-            #                                            tabname1, "$z", "[:,:,2,:]",",","",
-            #                                            tabname1, "$z", "[:,:,3,:]",",","",
-            #                                            tabname1, "$z", "[:,:,6,:]",",","","$rhop",
-            #                                            tabname1, "$z", "[:,:,8,:]",",","",
-            #                                            tabname1, "$z", "[:,:,7,:]",",","",
-            #                                            "$rhos", "$mu", "$spatialwlt", "$μt", "$nspat","$mask);")," end;")
-
             toeval = ""
-            for z in 1:nfreq
-                psfcbe = psfst.psfcbe[:,:,z]
-                # psfcbe = psfst.psfcbe[1:10,1:10,z]
-                chaine = string(tabname1, "$z", "[:,:,4,:]",",","",
-                                                           tabname1, "$z", "[:,:,1]",",","",
-                                                           tabname2, "$z", "[:,:,1,:]",",","",
-                                                           tabname2, "$z", "[:,:,2,:]",",","",
-                                                           tabname1, "$z", "[:,:,2]",",","",
-                                                           tabname1, "$z", "[:,:,3]",",","","=",
-                                                           "parallelmuffin(",
-                                                           tabname1, "$z", "[:,:,4]",",","",
-                                                           tabname2, "$z", "[:,:,2,:]",",","",
-                                                           tabname2, "$z", "[:,:,1,:]",",","","$rhot,",
-                                                           tabname1, "$z", "[:,:,1]",",","",
-                                                           tabname1, "$z", "[:,:,5]",",","",
-                                                           tabname1, "$z", "[:,:,2]",",","",
-                                                           tabname1, "$z", "[:,:,3]",",","",
-                                                           tabname1, "$z", "[:,:,6]",",","","$rhop,",
-                                                           tabname1, "$z", "[:,:,8]",",","",
-                                                           tabname1, "$z", "[:,:,7]",",","",
-                                                           "$rhos,", "$mu,", "$μt,", "$nspat,","$mask,",
-                                                           "$psfcbe",");")
-                toeval = string(toeval,chaine)
-            end
-println("toto")
-        eval(parse(toeval))
+            # for z in 1:nfreq
+            #     psfcbe = psfst.psfcbe[:,:,z]
+            #     # psfcbe = psfst.psfcbe[1:2,1:2,z]
+            #     chaine = string(tabname1, "$z", "[:,:,4,:]",",","",
+            #                                                tabname1, "$z", "[:,:,1]",",","",
+            #                                                tabname2, "$z", "[:,:,1,:]",",","",
+            #                                                tabname2, "$z", "[:,:,2,:]",",","",
+            #                                                tabname1, "$z", "[:,:,2]",",","",
+            #                                                tabname1, "$z", "[:,:,3]",",","","=",
+            #                                                "parallelmuffin(",
+            #                                                tabname1, "$z", "[:,:,4]",",","",
+            #                                                tabname2, "$z", "[:,:,2,:]",",","",
+            #                                                tabname2, "$z", "[:,:,1,:]",",","","$rhot,",
+            #                                                tabname1, "$z", "[:,:,1]",",","",
+            #                                                tabname1, "$z", "[:,:,5]",",","",
+            #                                                tabname1, "$z", "[:,:,2]",",","",
+            #                                                tabname1, "$z", "[:,:,3]",",","",
+            #                                                tabname1, "$z", "[:,:,6]",",","","$rhop,",
+            #                                                tabname1, "$z", "[:,:,8]",",","",
+            #                                                tabname1, "$z", "[:,:,7]",",","",
+            #                                                "$rhos,", "$mu,", "$μt,", "$nspat,","$mask,",
+            #                                                "$psfcbe",");")
+            #     # toeval = string(toeval,chaine)
+            #     # println(parse(chaine))
+            #     eval(parse(chaine))
+            #     println("frequency","$z")
+            # end
+            # freq3d1[:,:,4],
+            # freq3d1[:,:,1],
+            # freq4d1[:,:,1,:],
+            # freq4d1[:,:,2,:],
+            # freq3d1[:,:,2],
+            # freq3d1[:,:,3] = parallelmuffin(freq3d1[:,:,4],
+            #                                 freq4d1[:,:,2,:],
+            #                                 freq4d1[:,:,1,:],rhot,
+            #                                 freq3d1[:,:,1],
+            #                                 freq3d1[:,:,5],
+            #                                 freq3d1[:,:,2],
+            #                                 freq3d1[:,:,3],
+            #                                 freq3d1[:,:,6],rhop,
+            #                                 freq3d1[:,:,8],
+            #                                 freq3d1[:,:,7],
+            #                                 rhos,mu,μt,nspat,mask,psfst.psfcbe[:,:,1])
 
 
-println("toto tata")
-        # for z in 1:nfreq
-        #
-        #     freq3d$z[:,:,4,:],freq3d$z[:,:,1,:],freq4d$z[:,:,1,:],freq4d$z[:,:,2,:],freq3d$z[:,:,2,:],freq3d$z[:,:,3,:] =
-        #                                 parallelmuffin(freq3d$z[:,:,4,:],,freq4d$z[:,:,2,:],freq4d$z[:,:,1,:], rhot,freq3d$z[:,:,1,:],
-        #                                 freq3d$z[:,:,5,:],freq3d$z[:,:,2,:],freq3d$z[:,:,3,:],freq3d$z[:,:,6,:], rhop,freq3d$z[:,:,8,:],
-        #                                 freq3d$z[:,:,7,:], rhos, mu, spatialwlt, μt, nspat,mask)
-        #
-        #
-        #
-        # end
 
-
+    @sync begin
+         @parallel for z in 1:nfreq
+              cube3D[z][:,:,4],cube3D[z][:,:,1],cube4D[z][:,:,1,:],cube4D[z][:,:,2,:],
+              cube3D[z][:,:,2],cube3D[z][:,:,3] = parallelmuffin(        cube3D[z][:,:,4],
+                                                                         cube4D[z][:,:,2,:],
+                                                                         cube4D[z][:,:,1,:],rhot,
+                                                                         cube3D[z][:,:,1],
+                                                                         cube3D[z][:,:,5],
+                                                                         cube3D[z][:,:,2],
+                                                                         cube3D[z][:,:,3],
+                                                                         cube3D[z][:,:,6],rhop,
+                                                                         cube3D[z][:,:,8],
+                                                                         cube3D[z][:,:,7],
+                                                                         rhos,mu,μt,nspat,mask,psfst.psfcbe[:,:,z])
+          end
+      end
         ##############################
         ######### prox spec ##########
+        for z in 1:nfreq
+        admmst.s[:,:,z] = copy(cube3D[z][:,:,7])
+        admmst.x[:,:,z] = copy(cube3D[z][:,:,1])
+        admmst.taus[:,:,z] = copy(cube3D[z][:,:,8])
+        admmst.p[:,:,z] = copy(cube3D[z][:,:,2])
+        end
 
         tmp = admmst.tauv + rhov*admmst.v
 
@@ -292,6 +287,33 @@ println("toto tata")
 
         admmst.tauv = admmst.tauv + rhov*(admmst.v-admmst.sh)
         admmst.taus = admmst.taus + rhos*(admmst.s-admmst.x)
+
+        for z in 1:nfreq
+            cube3D[z][:,:,7] = admmst.s[:,:,z]
+            cube3D[z][:,:,8] = admmst.taus[:,:,z]
+        end
+
+
+        # admmst.s, admmst.sh = estime_ssh(admmst.s,admmst.sh,tmp,nxy,nspec,admmst.spectralwlt,
+        #                                   admmst.x,admmst.taus,rhov,rhos)
+
+        # for z in 1:nfreq
+        # cube3D[z][:,:,7],admmst.sh = estime_ssh(cube3D[z][:,:,7],admmst.sh,tmp,nxy,nspec,admmst.spectralwlt,
+        #                                   cube3D[z][:,:,1],cube3D[z][:,:,8],rhov,rhos)
+        #  end
+        #
+        # tmp = admmst.sh - admmst.tauv/rhov
+        # admmst.v = prox_u(tmp,μv/rhov)
+        #
+        #
+        # ########################################
+        # #### update of Lagrange multipliers ####
+        #
+        # admmst.tauv = admmst.tauv + rhov*(admmst.v-admmst.sh)
+        # # admmst.taus = admmst.taus + rhos*(admmst.s-admmst.x)
+        # for z in 1:nfreq
+        # cube3D[z][:,:,8] = cube3D[z][:,:,8] + rhos*(cube3D[z][:,:,7]-cube3D[z][:,:,1])
+        # end
 
         ##############################
         ##### computer residues ######
@@ -341,17 +363,19 @@ end
 function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64,3},wlt::Array{Float64,3},psf::Array{Float64,3},
                      fty::Array{Float64,3},s::Array{Float64,3},taus::Array{Float64,3})
 
-                    #  x  = x[1:10,1:10,:]
-                    #  p =p[1:10,1:10,:]
-                    #  taup = taup[1:10,1:10,:]
-                    #  wlt =wlt[1:10,1:10,:]
-                    #  psf =psf[1:10,1:10,:]
-                    #  fty =fty[1:10,1:10,:]
-                    #  s =s[1:10,1:10,:]
-                    #  taus = taus[1:10,1:10,:]
+
+                    #  d = 2
+                    #  x  = x[1:d,1:d,:]
+                    #  p =p[1:d,1:d,:]
+                    #  taup = taup[1:d,1:d,:]
+                    #  wlt =wlt[1:d,1:d,:]
+                    #  psf =psf[1:d,1:d,:]
+                    #  fty =fty[1:d,1:d,:]
+                    #  s =s[1:d,1:d,:]
+                    #  taus = taus[1:d,1:d,:]
 
     Ndim = 8
-    listarr = {0 => 1}
+
     nxy = size(x)[1]
     nfreq = size(x)[3]
     workers = nworkers()
@@ -359,42 +383,88 @@ function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64
     a = a[1:nfreq]
 
     tabname = "freq3d"
-    toeval = ""
+    listarr = {0 => 1}
 
     for z in 1:nfreq
-        toeval = string(toeval,string(tabname, "$z", "=", "SharedArray(Float64,$nxy,$nxy,$Ndim,pids=[1,$a[$z]]);"))
-    end
-    eval(parse(toeval))
-
-    toeval = ""
-    result = {0 => 1}
-    for z in 1:nfreq
-        result[1] = x[:,:,z]
-        result[2] = p[:,:,z]
-        result[3] = taup[:,:,z]
-        result[4] = wlt[:,:,z]
-        result[5] = psf[:,:,z]
-        result[6] = fty[:,:,z]
-        result[7] = s[:,:,z]
-        result[8] = taus[:,:,z]
-        result[8+z] = string("for nd in 1:$Ndim;",string(tabname, "$z", "[:,:,nd]","=","$result[nd];")," end;")
+        # listarr[z] = SharedArray(Float64,nxy,nxy,Ndim,pids=[1,a[z]])
+        listarr[z] = SharedArray(Float64,nxy,nxy,Ndim)
 
     end
-    println(size(x))
-    println(size(p))
-    println(size(taup))
-    println(size(wlt))
-    println(size(fty))
-    println(size(s))
-    println(size(taus))
-    println(nxy," ",nfreq," ",a)
 
     for z in 1:nfreq
-        println(z)
-        eval(parse(result[8+z]))
+        println("freq","$z")
+        listarr[z][:,:,1] = x[:,:,z]
+        listarr[z][:,:,2] = p[:,:,z]
+        listarr[z][:,:,3] = taup[:,:,z]
+        listarr[z][:,:,4] = wlt[:,:,z]
+        listarr[z][:,:,5] = psf[:,:,z]
+        listarr[z][:,:,6] = fty[:,:,z]
+        listarr[z][:,:,7] = s[:,:,z]
+        listarr[z][:,:,8] = taus[:,:,z]
     end
-
+    return listarr
 end
+
+# function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64,3},wlt::Array{Float64,3},psf::Array{Float64,3},
+#                      fty::Array{Float64,3},s::Array{Float64,3},taus::Array{Float64,3})
+#
+#
+#                     #  d = 2
+#                     #  x  = x[1:d,1:d,:]
+#                     #  p =p[1:d,1:d,:]
+#                     #  taup = taup[1:d,1:d,:]
+#                     #  wlt =wlt[1:d,1:d,:]
+#                     #  psf =psf[1:d,1:d,:]
+#                     #  fty =fty[1:d,1:d,:]
+#                     #  s =s[1:d,1:d,:]
+#                     #  taus = taus[1:d,1:d,:]
+#
+#     Ndim = 8
+#     listarr = {0 => 1}
+#     nxy = size(x)[1]
+#     nfreq = size(x)[3]
+#     workers = nworkers()
+#     a = int(repmat(linspace(2,workers+1,workers),int(ceil(nfreq/workers)),1))
+#     a = a[1:nfreq]
+#
+#     tabname = "freq3d"
+#     toeval = ""
+#
+#     for z in 1:nfreq
+#         toeval = string(toeval,string(tabname, "$z", "=", "SharedArray(Float64,$nxy,$nxy,$Ndim,pids=[1,$a[$z]]);"))
+#     end
+#     eval(parse(toeval))
+#     toeval = ""
+#
+#     for z in 1:nfreq
+#         println("freq","$z")
+#         tab1 = x[:,:,z]
+#         tab2 = p[:,:,z]
+#         tab3 = taup[:,:,z]
+#         tab4 = wlt[:,:,z]
+#         tab5 = psf[:,:,z]
+#         tab6 = fty[:,:,z]
+#         tab7 = s[:,:,z]
+#         tab8 = taus[:,:,z]
+#         eval(parse(string(tabname, "$z", "[:,:,1]","=","$tab1;")))
+#         print(" ", "1")
+#         eval(parse(string(tabname, "$z", "[:,:,2]","=","$tab2;")))
+#         print(" ", "2")
+#         eval(parse(string(tabname, "$z", "[:,:,3]","=","$tab3;")))
+#         print(" ", "3")
+#         eval(parse(string(tabname, "$z", "[:,:,4]","=","$tab4;")))
+#         print(" ", "4")
+#         eval(parse(string(tabname, "$z", "[:,:,5]","=","$tab5;")))
+#         print(" ", "5")
+#         eval(parse(string(tabname, "$z", "[:,:,6]","=","$tab6;")))
+#         print(" ", "6")
+#         eval(parse(string(tabname, "$z", "[:,:,7]","=","$tab7;")))
+#         print(" ", "7")
+#         eval(parse(string(tabname, "$z", "[:,:,8]","=","$tab8;")))
+#         print(" ", "8")
+#         println("")
+#     end
+# end
 
 
 #########################################################################
@@ -403,9 +473,10 @@ end
 # genshared4D(t,taut,listarr)
 
 function genshared4D(t::Array{Float64,4},taut::Array{Float64,4})
-
-    # t = t[1:10,1:10,:,:]
-    # taut = taut[1:10,1:10,:,:]
+    #
+    # d = 2
+    # t = t[1:d,1:d,:,:]
+    # taut = taut[1:d,1:d,:,:]
 
     listarr = {0 => 1}
     Ndim = 2
@@ -419,22 +490,22 @@ function genshared4D(t::Array{Float64,4},taut::Array{Float64,4})
     tabname = "freq4d"
     toeval = ""
 
-    for z in 1:nfreq
-        toeval = string(toeval,string(tabname, "$z", "=", "SharedArray(Float64,$nxy,$nxy,$Ndim,$nspat,pids=[1,$a[$z]]);"))
-    end
-    eval(parse(toeval))
 
-    toeval = ""
-    result = {0 => 1}
+    listarr = {0 => 1}
+
     for z in 1:nfreq
+        # listarr[z] = SharedArray(Float64,nxy,nxy,Ndim,nspat,pids=[1,a[z]])
+        listarr[z] = SharedArray(Float64,nxy,nxy,Ndim,nspat)
+    end
+
+    for z in 1:nfreq
+        println("freq","$z")
         for b in 1:nspat
-            result[1] = t[:,:,z,b]
-            result[2] = taut[:,:,z,b]
-            chaine = string("for nd in 1:$Ndim;",string(tabname, "$z", "[:,:,nd,$b]","=","$result[nd];")," end;")
-            toeval = string(toeval,chaine)
+            listarr[z][:,:,1,b] = t[:,:,z,b]
+            listarr[z][:,:,2,b] = taut[:,:,z,b]
         end
     end
-    eval(parse(toeval))
+    return listarr
 end
 
 #########################################################################
@@ -612,3 +683,15 @@ end
 #     println(nxy," ",nfreq," ",a)
 #     eval(parse(toeval))
 # end
+
+function estime_ssh(s::Array{Float64,3},sh::Array{Float64,3},tmp::Array{Float64,3},
+                    nxy::Int64,nspec::Int64,spectralwlt::Array{Float64,3},
+                    x::Array{Float64,3},taus::Array{Float64,3},rhov::Float64,rhos::Float64)
+
+
+    spectralwlt = idct(tmp,3)
+    s = (spectralwlt + rhos*x - taus)/(rhov*nspec + rhos)
+    sh = dct(s,3)
+
+    return s,sh
+end

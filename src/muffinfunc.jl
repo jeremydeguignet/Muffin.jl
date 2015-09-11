@@ -679,3 +679,15 @@ function psfcbe_init(psfcbe,x::Array{Float64,3},psf::Array{Float64,3},mu)
     end
     return psfcbe
 end
+function psfcbe_init(psfcbe,x::SharedArray{Float64,3},psf::Array{Float64,3},mu)
+    nxy = (size(x))[1]
+    nxypsf = (size(psf))[1]
+    nfreq = (size(x))[3]
+    psfpad = zeros(Float64,nxy,nxy,nfreq)
+    psfcbe = zeros(Complex64,nxy,nxy,nfreq)
+    for z in 1:nfreq
+        psfpad[1:nxypsf,1:nxypsf,z] = psf[:,:,z]
+        psfcbe[:,:,z] = 1./(abs(fft(psfpad[:,:,z])).^2 + mu)
+    end
+    return psfcbe
+end
