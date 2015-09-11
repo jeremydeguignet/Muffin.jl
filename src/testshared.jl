@@ -392,7 +392,7 @@ function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64
     end
 
     for z in 1:nfreq
-        println("freq","$z")
+        print("freq","$z"," ")
         listarr[z][:,:,1] = x[:,:,z]
         listarr[z][:,:,2] = p[:,:,z]
         listarr[z][:,:,3] = taup[:,:,z]
@@ -499,7 +499,7 @@ function genshared4D(t::Array{Float64,4},taut::Array{Float64,4})
     end
 
     for z in 1:nfreq
-        println("freq","$z")
+        print("freq","$z"," ")
         for b in 1:nspat
             listarr[z][:,:,1,b] = t[:,:,z,b]
             listarr[z][:,:,2,b] = taut[:,:,z,b]
