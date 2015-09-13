@@ -12,45 +12,48 @@ println("MUFFIN initialisation")
              ##################################
 ################### data initialisation #################
              ##################################
+             
+                 if isempty(dataobj) == false
+                     if dataobj == "m31"
+                         psf = "data/meerkat_m30_25pix.psf.fits"
+                         obj = "data/M31.fits"
+                         tmp = string(Pkg.dir("Muffin"))
+                         psf = string(tmp,tmp[1],psf)
+                         obj = string(tmp,tmp[1],obj)
+                     elseif dataobj == "andro"
+                         psf = "data/meerkat_m30_25pix.psf.fits"
+                         obj = "data/andro.fits"
+                         tmp = string(Pkg.dir("Muffin"))
+                         psf = string(tmp,tmp[1],psf)
+                         obj = string(tmp,tmp[1],obj)
+                     elseif dataobj == "2gauss"
+                         psf = "data/meerkat_m30_25pix.psf.fits"
+                         obj = "data/2gauss.fits"
+                         tmp = string(Pkg.dir("Muffin"))
+                         psf = string(tmp,tmp[1],psf)
+                         obj = string(tmp,tmp[1],obj)
+                     elseif dataobj == "chiara"
+                         psf = "/home/deguignet/Julia/example_sim_psf.fits"
+                         obj = "/home/deguignet/Julia/example_sim_dirty.fits"
+                     elseif isempty(folder)
+                         tmp = pwd()
+                         psf = string(tmp,tmp[1],datapsf)
+                         obj = string(tmp,tmp[1],dataobj)
+                     elseif typeof(folder) == ASCIIString
+                              psf = string(folder,folder[1],datapsf)
+                              obj = string(folder,folder[1],dataobj)
+                     else
+                              error("data folder is not correct")
+                     end
 
+                 elseif isempty(dataobj)
+                     psf = "data/meerkat_m30_25pix.psf.fits"
+                     obj = "data/M31.fits"
+                     tmp = string(Pkg.dir("Muffin"))
+                     psf = string(tmp,tmp[1],psf)
+                     obj = string(tmp,tmp[1],obj)
+                 end
 
-if typeof(dataobj) == ASCIIString
-    if dataobj == "m31"
-        psf = "data/meerkat_m30_25pix.psf.fits"
-        obj = "data/M31.fits"
-        tmp = string(Pkg.dir("Muffin"))
-        psf = string(tmp,tmp[1],psf)
-        obj = string(tmp,tmp[1],obj)
-    elseif dataobj == "andro"
-        psf = "data/meerkat_m30_25pix.psf.fits"
-        obj = "data/andro.fits"
-        tmp = string(Pkg.dir("Muffin"))
-        psf = string(tmp,tmp[1],psf)
-        obj = string(tmp,tmp[1],obj)
-    elseif dataobj == "2gauss"
-        psf = "data/meerkat_m30_25pix.psf.fits"
-        obj = "data/2gauss.fits"
-        tmp = string(Pkg.dir("Muffin"))
-        psf = string(tmp,tmp[1],psf)
-        obj = string(tmp,tmp[1],obj)
-    elseif dataobj == "chiara"
-        psf = "/home/deguignet/Julia/example_sim_psf.fits"
-        obj = "/home/deguignet/Julia/example_sim_dirty.fits"
-    elseif isempty(folder)
-        tmp = pwd()
-        psf = string(tmp,tmp[1],datapsf)
-        obj = string(tmp,tmp[1],dataobj)
-    elseif typeof(folder) == ASCIIString
-             psf = string(folder,folder[1],datapsf)
-             obj = string(folder,folder[1],dataobj)
-    else
-             error("data folder is not correct")
-    end
-
-elseif isempty(dataobj)
-    psf = "data/meerkat_m30_25pix.psf.fits"
-    obj = "data/M31.fits"
-end
 
 println("psf :"," ",psf)
 println("obj :"," ",obj)
@@ -217,7 +220,7 @@ tic()
                 ###########################
 
                 permutation = randperm(5)
-        
+
                 for p in 1:5
                     perm = p
 
@@ -230,9 +233,9 @@ tic()
                                                                cube3D[z][:,:,1],
                                                                cube3D[z][:,:,2],
                                                                cube3D[z][:,:,3],
-                                                               cube3D[z][:,:,6],rhop,
-                                                               cube3D[z][:,:,8],
+                                                               cube3D[z][:,:,5],rhop,
                                                                cube3D[z][:,:,7],
+                                                               cube3D[z][:,:,6],
                                                                rhos,spatialwlt,nspat,psfst.psfcbe[:,:,z])
                               end
                           end
@@ -254,9 +257,9 @@ tic()
                     elseif perm == 4
 
                         for z in 1:nfreq
-                        admmst.s[:,:,z] = copy(cube3D[z][:,:,7])
+                        admmst.s[:,:,z] = copy(cube3D[z][:,:,6])
                         admmst.x[:,:,z] = copy(cube3D[z][:,:,1])
-                        admmst.taus[:,:,z] = copy(cube3D[z][:,:,8])
+                        admmst.taus[:,:,z] = copy(cube3D[z][:,:,7])
                         end
 
                         tmp = admmst.tauv + rhov*admmst.v
@@ -265,7 +268,7 @@ tic()
                                                           admmst.x,admmst.taus,rhov,rhos)
 
                         for z in 1:nfreq
-                            cube3D[z][:,:,7] = admmst.s[:,:,z]
+                            cube3D[z][:,:,6] = admmst.s[:,:,z]
                         end
 
                     elseif perm == 5
@@ -288,7 +291,7 @@ tic()
 
         for z in 1:nfreq
             cube3D[z][:,:,3] = cube3D[z][:,:,3] + rhop*(cube3D[z][:,:,2]-cube3D[z][:,:,1]) # maj taup
-            cube3D[z][:,:,8] = admmst.taus[:,:,z]
+            cube3D[z][:,:,7] = admmst.taus[:,:,z]
             admmst.p[:,:,z] = copy(cube3D[z][:,:,2])
         end
 
@@ -331,5 +334,66 @@ println("")
 ####################################################################
 
 return psfst, skyst, algost, admmst, toolst
+
+end
+
+
+
+###########################
+### Ranndom permutation ###
+###########################
+
+function permuteX(wlt::Array{Float64,2},taut::Array{Float64,4},t::Array{Float64,4},rhot::Float64,
+                        x::Array{Float64,2},p::Array{Float64,2},taup::Array{Float64,2},
+                        fty::Array{Float64,2},rhop::Float64,taus::Array{Float64,2},s::Array{Float64,2},rhos::Float64,
+                        spatialwlt,nspat::Int,psfcbe::Array{Complex64,2})
+
+    if spatialwlt[end] == "dirac"
+        wlt = myidwt_dirac(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
+        b = fty + taup + rhop*p + taus + rhos*s
+        wlt_b = wlt + b
+        x = real(ifft(psfcbe.*fft(wlt_b)))
+    else
+        wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
+        b = fty + taup + rhop*p + taus + rhos*s
+        wlt_b = wlt + b
+        x = real(ifft(psfcbe.*fft(wlt_b)))
+    end
+    return x
+end
+
+function permuteP(x::Array{Float64,2},p::Array{Float64,2},taup::Array{Float64,2},
+                  rhop::Float64,mask::Array{Float64,2})
+
+        tmp = x-taup/rhop
+        p = max(0,tmp).*mask
+
+    return p
+
+end
+
+
+function permuteT(taut::Array{Float64,4}, t::Array{Float64,4}, rhot::Float64, x::Array{Float64,2},
+                  spatialwlt, μt::Float64, nspat::Int)
+
+    if spatialwlt[end] == "dirac"
+        for b in 1:nspat-1
+                    hx = dwt(x,wavelet(spatialwlt[b]))
+                    tmp = hx - taut[:,:,1,b]/rhot
+                    t[:,:,1,b] = prox_u(tmp,μt/rhot)
+        end
+                    hx = x
+                    tmp = hx - taut[:,:,1,nspat]/rhot
+                    t[:,:,1,nspat] = prox_u(tmp,μt/rhot)
+
+    else
+        for b in 1:nspat
+                    hx = dwt(x,wavelet(spatialwlt[b]))
+                    tmp = hx - taut[:,:,1,b]/rhot
+                    t[:,:,1,b] = prox_u(tmp,μt/rhot)
+        end
+    end
+
+    return t
 
 end

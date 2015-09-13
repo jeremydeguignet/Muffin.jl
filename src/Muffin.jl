@@ -33,7 +33,6 @@ module Muffin
     include("savedata.jl")
     include("darraytest.jl")
     include("testshared.jl")
-    include("permut.jl")
     include("random_admm.jl")
 
 

@@ -14,43 +14,46 @@ println("MUFFIN initialisation")
              ##################################
 
 
-if typeof(dataobj) == ASCIIString
-    if dataobj == "m31"
-        psf = "data/meerkat_m30_25pix.psf.fits"
-        obj = "data/M31.fits"
-        tmp = string(Pkg.dir("Muffin"))
-        psf = string(tmp,tmp[1],psf)
-        obj = string(tmp,tmp[1],obj)
-    elseif dataobj == "andro"
-        psf = "data/meerkat_m30_25pix.psf.fits"
-        obj = "data/andro.fits"
-        tmp = string(Pkg.dir("Muffin"))
-        psf = string(tmp,tmp[1],psf)
-        obj = string(tmp,tmp[1],obj)
-    elseif dataobj == "2gauss"
-        psf = "data/meerkat_m30_25pix.psf.fits"
-        obj = "data/2gauss.fits"
-        tmp = string(Pkg.dir("Muffin"))
-        psf = string(tmp,tmp[1],psf)
-        obj = string(tmp,tmp[1],obj)
-    elseif dataobj == "chiara"
-        psf = "/home/deguignet/Julia/example_sim_psf.fits"
-        obj = "/home/deguignet/Julia/example_sim_dirty.fits"
-    elseif isempty(folder)
-        tmp = pwd()
-        psf = string(tmp,tmp[1],datapsf)
-        obj = string(tmp,tmp[1],dataobj)
-    elseif typeof(folder) == ASCIIString
-             psf = string(folder,folder[1],datapsf)
-             obj = string(folder,folder[1],dataobj)
-    else
-             error("data folder is not correct")
-    end
+                 if isempty(dataobj) == false
+                     if dataobj == "m31"
+                         psf = "data/meerkat_m30_25pix.psf.fits"
+                         obj = "data/M31.fits"
+                         tmp = string(Pkg.dir("Muffin"))
+                         psf = string(tmp,tmp[1],psf)
+                         obj = string(tmp,tmp[1],obj)
+                     elseif dataobj == "andro"
+                         psf = "data/meerkat_m30_25pix.psf.fits"
+                         obj = "data/andro.fits"
+                         tmp = string(Pkg.dir("Muffin"))
+                         psf = string(tmp,tmp[1],psf)
+                         obj = string(tmp,tmp[1],obj)
+                     elseif dataobj == "2gauss"
+                         psf = "data/meerkat_m30_25pix.psf.fits"
+                         obj = "data/2gauss.fits"
+                         tmp = string(Pkg.dir("Muffin"))
+                         psf = string(tmp,tmp[1],psf)
+                         obj = string(tmp,tmp[1],obj)
+                     elseif dataobj == "chiara"
+                         psf = "/home/deguignet/Julia/example_sim_psf.fits"
+                         obj = "/home/deguignet/Julia/example_sim_dirty.fits"
+                     elseif isempty(folder)
+                         tmp = pwd()
+                         psf = string(tmp,tmp[1],datapsf)
+                         obj = string(tmp,tmp[1],dataobj)
+                     elseif typeof(folder) == ASCIIString
+                              psf = string(folder,folder[1],datapsf)
+                              obj = string(folder,folder[1],dataobj)
+                     else
+                              error("data folder is not correct")
+                     end
 
-elseif isempty(dataobj)
-    psf = "data/meerkat_m30_25pix.psf.fits"
-    obj = "data/M31.fits"
-end
+                 elseif isempty(dataobj)
+                     psf = "data/meerkat_m30_25pix.psf.fits"
+                     obj = "data/M31.fits"
+                     tmp = string(Pkg.dir("Muffin"))
+                     psf = string(tmp,tmp[1],psf)
+                     obj = string(tmp,tmp[1],obj)
+                 end
 
 println("psf :"," ",psf)
 println("obj :"," ",obj)
@@ -221,12 +224,11 @@ tic()
                                                                          cube4D[z][:,:,2,:],
                                                                          cube4D[z][:,:,1,:],rhot,
                                                                          cube3D[z][:,:,1],
-                                                                         cube3D[z][:,:,5],
                                                                          cube3D[z][:,:,2],
                                                                          cube3D[z][:,:,3],
-                                                                         cube3D[z][:,:,6],rhop,
-                                                                         cube3D[z][:,:,8],
+                                                                         cube3D[z][:,:,5],rhop,
                                                                          cube3D[z][:,:,7],
+                                                                         cube3D[z][:,:,6],
                                                                          rhos,mu,spatialwlt,μt,nspat,mask,psfst.psfcbe[:,:,z])
           end
       end
@@ -234,9 +236,9 @@ tic()
         ##############################
         ######### prox spec ##########
         for z in 1:nfreq
-        admmst.s[:,:,z] = copy(cube3D[z][:,:,7])
+        admmst.s[:,:,z] = copy(cube3D[z][:,:,6])
         admmst.x[:,:,z] = copy(cube3D[z][:,:,1])
-        admmst.taus[:,:,z] = copy(cube3D[z][:,:,8])
+        admmst.taus[:,:,z] = copy(cube3D[z][:,:,7])
         admmst.p[:,:,z] = copy(cube3D[z][:,:,2])
         end
 
@@ -259,8 +261,8 @@ tic()
 
 
         for z in 1:nfreq
-            cube3D[z][:,:,7] = admmst.s[:,:,z]
-            cube3D[z][:,:,8] = admmst.taus[:,:,z]
+            cube3D[z][:,:,6] = admmst.s[:,:,z]
+            cube3D[z][:,:,7] = admmst.taus[:,:,z]
         end
 
         ##############################
@@ -320,7 +322,7 @@ function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64
                     #  s =s[1:d,1:d,:]
                     #  taus = taus[1:d,1:d,:]
 
-    Ndim = 8
+    Ndim = 7
 
     nxy = size(x)[1]
     nfreq = size(x)[3]
@@ -343,10 +345,9 @@ function genshared3D(x::Array{Float64,3},p::Array{Float64,3},taup::Array{Float64
         listarr[z][:,:,2] = p[:,:,z]
         listarr[z][:,:,3] = taup[:,:,z]
         listarr[z][:,:,4] = wlt[:,:,z]
-        listarr[z][:,:,5] = psf[:,:,z]
-        listarr[z][:,:,6] = fty[:,:,z]
-        listarr[z][:,:,7] = s[:,:,z]
-        listarr[z][:,:,8] = taus[:,:,z]
+        listarr[z][:,:,5] = fty[:,:,z]
+        listarr[z][:,:,6] = s[:,:,z]
+        listarr[z][:,:,7] = taus[:,:,z]
     end
     return listarr
 end
@@ -395,7 +396,7 @@ end
 
 
 function parallelmuffin(wlt::Array{Float64,2},taut::Array{Float64,4},t::Array{Float64,4},rhot::Float64,
-                        x::Array{Float64,2},psf::Array{Float64,2},p::Array{Float64,2},taup::Array{Float64,2},
+                        x::Array{Float64,2},p::Array{Float64,2},taup::Array{Float64,2},
                         fty::Array{Float64,2},rhop::Float64,taus::Array{Float64,2},s::Array{Float64,2},rhos::Float64,
                         mu::Float64,spatialwlt,μt::Float64,nspat::Int,mask::Array{Float64,2},psfcbe::Array{Complex64,2})
 
@@ -508,7 +509,7 @@ end
 # cube3D = genshared3D_v2(admmst.x,psfst.mypsf,admmst.fty)
 function genshared3D_v2(x::Array{Float64,3},psf::Array{Float64,3},fty::Array{Float64,3})
 
-    Ndim = 8
+    Ndim = 7
 
     nxy = size(x)[1]
     nfreq = size(x)[3]
@@ -526,8 +527,7 @@ function genshared3D_v2(x::Array{Float64,3},psf::Array{Float64,3},fty::Array{Flo
 
     for z in 1:nfreq
         listarr[z][:,:,1] = x[:,:,z]
-        listarr[z][:,:,5] = psf[:,:,z]
-        listarr[z][:,:,6] = fty[:,:,z]
+        listarr[z][:,:,5] = fty[:,:,z]
     end
     return listarr
 end
