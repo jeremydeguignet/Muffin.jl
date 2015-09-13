@@ -55,7 +55,7 @@ function loadpsf_dirty(psf::ASCIIString)
     return psfst
 end
 
-function loadparam(nspat,nfreq,nspec,nxy,niter,lastiter,nitermax)
+function loadparam(nspat,nfreq,nspec,nxy,niter,lastiter,nitermax,spatialwlt)
     algost = init_Algoparam()
     algost.nspat = nspat
     algost.nfreq = nfreq
@@ -64,6 +64,7 @@ function loadparam(nspat,nfreq,nspec,nxy,niter,lastiter,nitermax)
     algost.niter = niter
     algost.lastiter = lastiter
     algost.nitermax = nitermax
+    algost.spatialwlt = spatialwlt
     return algost
 end
 

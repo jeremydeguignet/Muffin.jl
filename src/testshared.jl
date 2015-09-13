@@ -4,7 +4,7 @@
 
 function muffin_SA(;folder="",dataobj="",datapsf="",nitermax = 500, rhop = 1,
             rhot = 5, rhov = 2, rhos = 1, μt = 5e-1, μv = 1e-0, mueps = 1e-3,
-            bw = 25, ws="",parallel="",mask="")
+            bw = 25, ws="",parallel="",mask="",dirac="false")
 
 println("")
 println("MUFFIN initialisation")
@@ -77,7 +77,13 @@ end
 
 
 ##################################
-spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8]
+if dirac == "true"
+    spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,"dirac"]
+    println("dirac")
+else
+    spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8]
+end
+# spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8]
 # spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
 
 const nspat = length(spatialwlt)
@@ -90,7 +96,7 @@ lastiter = 0
 
 #################################
 println("loading param...")
-algost = loadparam(nspat,nfreq,nspec,nxy,niter,lastiter,nitermax)
+algost = loadparam(nspat,nfreq,nspec,nxy,niter,lastiter,nitermax,spatialwlt)
 
 println("loading arrays...")
 if ws == "true"
@@ -161,12 +167,13 @@ const nspec = algost.nspec
 const nxy = algost.nxy
 const fty = admmst.fty
 const nitermax = algost.nitermax
+const spatialwlt  = algost.spatialwlt
 const mask = toolst.mask2D
 # const mask = toolst.mask2D[1:2,1:2,:]
 
 
 
-spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
+
 
 niter = algost.niter
 
@@ -220,7 +227,7 @@ tic()
                                                                          cube3D[z][:,:,6],rhop,
                                                                          cube3D[z][:,:,8],
                                                                          cube3D[z][:,:,7],
-                                                                         rhos,mu,μt,nspat,mask,psfst.psfcbe[:,:,z])
+                                                                         rhos,mu,spatialwlt,μt,nspat,mask,psfst.psfcbe[:,:,z])
           end
       end
 
@@ -390,26 +397,43 @@ end
 function parallelmuffin(wlt::Array{Float64,2},taut::Array{Float64,4},t::Array{Float64,4},rhot::Float64,
                         x::Array{Float64,2},psf::Array{Float64,2},p::Array{Float64,2},taup::Array{Float64,2},
                         fty::Array{Float64,2},rhop::Float64,taus::Array{Float64,2},s::Array{Float64,2},rhos::Float64,
-                        mu::Float64,μt::Float64,nspat::Int,mask::Array{Float64,2},psfcbe::Array{Complex64,2})
+                        mu::Float64,spatialwlt,μt::Float64,nspat::Int,mask::Array{Float64,2},psfcbe::Array{Complex64,2})
 
-spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8]
+
+    if spatialwlt[end] == "dirac"
+        wlt = myidwt_dirac(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
+        b = fty + taup + rhop*p + taus + rhos*s
+        wlt_b = wlt + b
+
+        x = real(ifft(psfcbe.*fft(wlt_b)))
+
+        for b in 1:nspat-1
+                    hx = dwt(x,wavelet(spatialwlt[b]))
+                    tmp = hx - taut[:,:,1,b]/rhot
+                    t[:,:,1,b] = prox_u(tmp,μt/rhot)
+                    taut[:,:,1,b] = taut[:,:,1,b] + rhot*(t[:,:,1,b]-hx)
+        end
+                    hx = x
+                    tmp = hx - taut[:,:,1,nspat]/rhot
+                    t[:,:,1,nspat] = prox_u(tmp,μt/rhot)
+                    taut[:,:,1,nspat] = taut[:,:,1,nspat] + rhot*(t[:,:,1,nspat]-hx)
+
+
+    else
         wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
         b = fty + taup + rhop*p + taus + rhos*s
         wlt_b = wlt + b
 
         x = real(ifft(psfcbe.*fft(wlt_b)))
 
-        # tmp1 = 0.0
-        # tmp2 = zeros(Float64,nxy,nxy)
         for b in 1:nspat
                     hx = dwt(x,wavelet(spatialwlt[b]))
                     tmp = hx - taut[:,:,1,b]/rhot
                     t[:,:,1,b] = prox_u(tmp,μt/rhot)
                     taut[:,:,1,b] = taut[:,:,1,b] + rhot*(t[:,:,1,b]-hx)
-                    # tmp1 = vecnorm([tmp2 (hx-(t)[:,:,z,b])],2)
-                    # tmp2 = (hx-(t)[:,:,z,b])
         end
-        # tmp2[:] = 0
+    end
+
 
 
         tmp = x-taup/rhop
@@ -420,38 +444,6 @@ spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8]
 
 end
 
-function parallelmuffin(wlt::SharedArray{Float64,2},taut::SharedArray{Float64,4},t::SharedArray{Float64,4},rhot::Float64,
-                        x::SharedArray{Float64,2},psf::Array{Float64,2},p::SharedArray{Float64,2},taup::SharedArray{Float64,2},
-                        fty::Array{Float64,2},rhop::Float64,taus::Array{Float64,2},s::Array{Float64,2},rhos::Float64,
-                        mu::Float64,μt::Float64,nspat::Int,mask::Array{Float64,2},psfcbe::Array{Complex64,2})
-
-spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8]
-        wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
-        b = fty + taup + rhop*p + taus + rhos*s
-        wlt_b = wlt + b
-
-        x = real(ifft(psfcbe.*fft(wlt_b)))
-
-        # tmp1 = 0.0
-        # tmp2 = zeros(Float64,nxy,nxy)
-        for b in 1:nspat
-                    hx = dwt(x,wavelet(spatialwlt[b]))
-                    tmp = hx - taut[:,:,1,b]/rhot
-                    t[:,:,1,b] = prox_u(tmp,μt/rhot)
-                    taut[:,:,1,b] = taut[:,:,1,b] + rhot*(t[:,:,1,b]-hx)
-                    # tmp1 = vecnorm([tmp2 (hx-(t)[:,:,z,b])],2)
-                    # tmp2 = (hx-(t)[:,:,z,b])
-        end
-        # tmp2[:] = 0
-
-
-        tmp = x-taup/rhop
-        p = max(0,tmp).*mask
-        taup = taup + rhop*(p-x)
-
-    return wlt,x,t,taut,p,taup
-
-end
 
 function estime_ssh(s::Array{Float64,3},sh::Array{Float64,3},tmp::Array{Float64,3},
                     nxy::Int64,nspec::Int64,spectralwlt::Array{Float64,3},

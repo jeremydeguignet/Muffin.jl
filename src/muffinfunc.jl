@@ -575,7 +575,14 @@ function myidwt(wlt,nspat::Int,taut,rhot::Float64,t,spatialwlt)
             end
         return wlt
 end
-
+function myidwt_dirac(wlt,nspat::Int,taut,rhot::Float64,t,spatialwlt)
+        wlt = idwt(taut[:,:,1,1] + rhot*t[:,:,1,1],wavelet(spatialwlt[1]))
+            for b in 2:nspat-1
+                wlt = wlt + idwt(taut[:,:,1,b] + rhot*t[:,:,1,b],wavelet(spatialwlt[b]))
+            end
+            wlt = wlt + taut[:,:,1,nspat] + rhot*t[:,:,1,nspat]
+        return wlt
+end
 
 ##################################
 

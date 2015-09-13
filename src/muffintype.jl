@@ -42,6 +42,7 @@ type Algo_param
     niter::Int64
     lastiter::Int64
     nitermax::Int64
+    spatialwlt::Array
 end
 
 type Admm_array
@@ -138,7 +139,7 @@ end
 ####################################
 ####################################
 function init_Algoparam()
-    return Algo_param(0,0,0,0,0,0,0)
+        return Algo_param(0,0,0,0,0,0,0,[])
 end
 # function init_Admmarray()
 #     return Admm_array([],[],0.,[],[],[],0.,[],[],0.,[],[],0.,[],[],[],[],[],0.,0.,0.,0.,0.)

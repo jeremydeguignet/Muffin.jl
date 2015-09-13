@@ -21,7 +21,7 @@ module Muffin
     using GHF
 
 
-    export muffin,savedata,muffin_DA,muffin_SA
+    export muffin,savedata,muffin_DA,muffin_SA,muffin_random
 
     include("muffintype.jl")
 
@@ -33,6 +33,8 @@ module Muffin
     include("savedata.jl")
     include("darraytest.jl")
     include("testshared.jl")
+    include("permut.jl")
+    include("random_admm.jl")
 
 
 end
