@@ -13,7 +13,6 @@ println("MUFFIN initialisation")
 ################### data initialisation #################
              ##################################
 
-
                  if isempty(dataobj) == false
                      if dataobj == "m31"
                          psf = "data/meerkat_m30_25pix.psf.fits"
@@ -86,8 +85,6 @@ if dirac == "true"
 else
     spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8]
 end
-# spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8]
-# spatialwlt  = [WT.db1,WT.db2,WT.db3,WT.db4,WT.db5,WT.db6,WT.db7,WT.db8,WT.haar]
 
 const nspat = length(spatialwlt)
 const nfreq = size(psfst.mypsf)[3]
@@ -172,18 +169,12 @@ const fty = admmst.fty
 const nitermax = algost.nitermax
 const spatialwlt  = algost.spatialwlt
 const mask = toolst.mask2D
-# const mask = toolst.mask2D[1:2,1:2,:]
-
-
-
-
 
 niter = algost.niter
 
 workers = nworkers()
 a = int(repmat(linspace(2,workers+1,workers),int(ceil(nfreq/workers)),1))
 a = a[1:nfreq]
-
 
 # println("3D SharedArrays init")
 # cube3D = genshared3D(admmst.x,admmst.p,admmst.taup,admmst.wlt,psfst.mypsf,admmst.fty,admmst.s,admmst.taus)
@@ -193,11 +184,8 @@ a = a[1:nfreq]
 
 println("3D SharedArrays init")
 cube3D = genshared3D_v2(admmst.x,psfst.mypsf,admmst.fty)
-println("")
 println("4D SharedArrays init")
 cube4D = genshared4D_v2(nspat,nxy,nfreq)
-
-
 
 loop = true
 
