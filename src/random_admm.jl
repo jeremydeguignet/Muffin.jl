@@ -123,7 +123,6 @@ else
     toolst = loadtools(nitermax,nfreq,nxy)
 end
 
-println(typeof(mask))
 if typeof(mask) == Int64
     toolst.mask2D = maskgen(admmst.x[:,:,1],mask)
     println(sum(toolst.mask2D)/4)
@@ -271,6 +270,9 @@ tic()
 
         ########################################
         #### update of Lagrange multipliers ####
+        for z in 1:nfreq
+        admmst.x[:,:,z] = copy(cube3D[z][:,:,1])
+        end
 
 
         admmst.tauv = admmst.tauv + rhov*(admmst.v-admmst.sh)
