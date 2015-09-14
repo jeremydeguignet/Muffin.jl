@@ -671,6 +671,7 @@ function maskgen(x::Array{Float64,2},dim)
     mask = zeros(nxy,nxy)
     tmp = ones(nxy - 2*dim,nxy - 2*dim)
     mask[ (dim+1:nxy -dim),(dim+1:nxy -dim)] = tmp
+    println("dimension mask :"," ",size(mask))
     return mask
 end
 
