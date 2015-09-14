@@ -211,7 +211,7 @@ tic()
                 permutation = randperm(5)
 
                 for p in 1:5
-                    perm = p
+                    perm = permutation[p]
 
                     if perm == 1
                         @sync begin
