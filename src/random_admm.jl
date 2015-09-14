@@ -169,7 +169,7 @@ const fty = admmst.fty
 const nitermax = algost.nitermax
 const spatialwlt  = algost.spatialwlt
 const mask = toolst.mask2D
-
+println(nfreq)
 niter = algost.niter
 
 workers = nworkers()
