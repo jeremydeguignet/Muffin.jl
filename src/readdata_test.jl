@@ -1,10 +1,13 @@
 using HDF5, JLD
 using PyPlot
 
-file = "/Users/deguignet/Documents/Julia/imagerec.jld"
+file = "/Users/deguignet/Documents/Julia/simulations/140915_chiara/result_chiara_140915_001.jld"
+file = "/Users/deguignet/Documents/Julia/simulations/140915_chiara/imagerec.jld"
 
-admmst = load(file,"admmst")
-x = admmst.x
+#
+# admmst = load(file,"admmst")
+# x = admmst.x
+x = load(file,"admmst.x")
 lastiter = load(file, "algost.lastiter")
 nfreq = load(file, "algost.nfreq")
 

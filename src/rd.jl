@@ -90,56 +90,56 @@ end
 #############################################################################
 #############################################################################
 ######################################  sky / dirty / rec_obj / error
-# figure(3)
-# clf()
-# title("multiplot")
-# e = 1
-# for z in [8 16 24 32]
-#     subplot(4,4,e)
-#     axis("off")
-#     a = nu[z]/1e9
-#     imshow((abs(sky[:,:,z]).^0.25),cmap=ColorMap("spectral"))
-#     title(string(L"$\nu \, = \,$","$a ", L"\, GHz"),fontsize=14)
-#     e += 1
-# end
-# subplots_adjust(bottom=0.1, right=0.8, top=0.9)
-# cax = axes([0.85, 0.3, 0.025, 0.6])
-# colorbar(cax=cax)
-# e = 5
-# for z in [8 16 24 32]
-#     subplot(4,4,e)
-#     axis("off")
-#     imshow((mydata[:,:,z]),cmap=ColorMap("spectral"))
-#     e += 1
-# end
-# subplots_adjust(bottom=0.1, right=0.8, top=0.9)
-# cax = axes([0.85, 0.3, 0.025, 0.6])
-# colorbar(cax=cax)
-#
-# e = 9
-# for z in [8 16 24 32]
-#     subplot(4,4,e)
-#     axis("off")
-#     imshow((abs(x[:,:,z])/maximum(x[:,:,z])*maximum(sky[:,:,z])).^0.5,cmap=ColorMap("spectral"))
-#     e += 1
-# end
-#
-# subplots_adjust(bottom=0.1, right=0.8, top=0.9)
-# cax = axes([0.85, 0.3, 0.025, 0.6])
-# colorbar(cax=cax)
-#
-#
-# e = 13
-# for z in [8 16 24 32]
-#     subplot(4,4,e)
-#     axis("off")
-#     imshow((abs(sky[:,:,z]-x[:,:,z])/(sum(sky[:,:,z]))).^0.25,cmap=ColorMap("spectral"))
-#     e += 1
-# end
-#
-# subplots_adjust(bottom=0.1, right=0.8, top=0.9)
-# cax = axes([0.85, 0.1, 0.025, 0.17])
-# colorbar(cax=cax)
+figure(3)
+clf()
+title("multiplot")
+e = 1
+for z in [8 16 24 32]
+    subplot(4,4,e)
+    axis("off")
+    a = nu[z]/1e9
+    imshow((abs(sky[:,:,z]).^0.25),cmap=ColorMap("spectral"))
+    title(string(L"$\nu \, = \,$","$a ", L"\, GHz"),fontsize=14)
+    e += 1
+end
+subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+cax = axes([0.85, 0.3, 0.025, 0.6])
+colorbar(cax=cax)
+e = 5
+for z in [8 16 24 32]
+    subplot(4,4,e)
+    axis("off")
+    imshow((mydata[:,:,z]),cmap=ColorMap("spectral"))
+    e += 1
+end
+subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+cax = axes([0.85, 0.3, 0.025, 0.6])
+colorbar(cax=cax)
+
+e = 9
+for z in [8 16 24 32]
+    subplot(4,4,e)
+    axis("off")
+    imshow((abs(x[:,:,z])/maximum(x[:,:,z])*maximum(sky[:,:,z])).^0.5,cmap=ColorMap("spectral"))
+    e += 1
+end
+
+subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+cax = axes([0.85, 0.3, 0.025, 0.6])
+colorbar(cax=cax)
+
+
+e = 13
+for z in [8 16 24 32]
+    subplot(4,4,e)
+    axis("off")
+    imshow((abs(sky[:,:,z]-x[:,:,z])/(sum(sky[:,:,z]))).^0.25,cmap=ColorMap("spectral"))
+    e += 1
+end
+
+subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+cax = axes([0.85, 0.1, 0.025, 0.17])
+colorbar(cax=cax)
 #############################################################################
 #############################################################################
 

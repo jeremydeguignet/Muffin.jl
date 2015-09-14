@@ -4,7 +4,7 @@
 
 function muffin_random(;folder="",dataobj="",datapsf="",nitermax = 500, rhop = 1,
             rhot = 5, rhov = 2, rhos = 1, μt = 5e-1, μv = 1e-0, mueps = 1e-3,
-            bw = 25, ws="",parallel="",mask="",dirac="false")
+            bw = 5, ws="",parallel="",mask="",dirac="false")
 
 println("")
 println("MUFFIN initialisation")
