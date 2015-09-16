@@ -35,6 +35,9 @@ println("MUFFIN initialisation")
                      elseif dataobj == "chiara"
                          psf = "/home/deguignet/Julia/example_sim_psf.fits"
                          obj = "/home/deguignet/Julia/example_sim_dirty.fits"
+                     elseif dataobj == "halo"
+                         psf = "/home/deguignet/simulations/halo/HALO_ONLY_psf.fits"
+                         obj = "/home/deguignet/simulations/halo/HALO_ONLY_dirty.fits"
                      elseif isempty(folder)
                          tmp = pwd()
                          psf = string(tmp,tmp[1],datapsf)
@@ -62,6 +65,13 @@ println("obj :"," ",obj)
             ##################################
 
 if dataobj == "chiara"
+##################################
+println("loading psf...")
+psfst = loadpsf_dirty(psf)
+println("loading sky...")
+skyst = loadsky_dirty(obj,psfst.mypsf,psfst.nu)
+##################################
+elseif dataobj == "halo"
 ##################################
 println("loading psf...")
 psfst = loadpsf_dirty(psf)
