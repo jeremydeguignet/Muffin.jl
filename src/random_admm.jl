@@ -35,13 +35,16 @@ println("MUFFIN initialisation")
                      elseif dataobj == "chiara"
                         #  psf = "/home/deguignet/Julia/example_sim_psf.fits"
                         #  obj = "/home/deguignet/Julia/example_sim_dirty.fits"
-                        # psf = "/Users/deguignet/Documents/Julia/chiara_psf2d.fits"
-                        # obj = "/Users/deguignet/Documents/Julia/chiara2d.fits"
-                        psf = "/home/deguignet/chiara_psf2d.fits"
-                        obj = "/home/deguignet/chiara2d.fits"
+                        psf = "/Users/deguignet/Documents/Julia/chiara_psf2d.fits"
+                        obj = "/Users/deguignet/Documents/Julia/chiara2d.fits"
+                        # psf = "/home/deguignet/chiara_psf2d.fits"
+                        # obj = "/home/deguignet/chiara2d.fits"
                      elseif dataobj == "halo"
                          psf = "/home/deguignet/simulations/halo/HALO_ONLY_psf.fits"
                          obj = "/home/deguignet/simulations/halo/HALO_ONLY_dirty.fits"
+                     elseif dataobj == "toy"
+                         psf = "/Users/deguignet/Desktop/toypsf.fits"
+                         obj = "/Users/deguignet/Desktop/toydirty.fits"
                      elseif isempty(folder)
                          tmp = pwd()
                          psf = string(tmp,tmp[1],datapsf)
@@ -81,6 +84,13 @@ elseif dataobj == "halo"
 println("loading psf...")
 psfst = loadpsf_dirty(psf)
 println("loading sky...")
+skyst = loadsky_dirty(obj,psfst.mypsf,psfst.nu)
+##################################
+elseif dataobj == "toy"
+##################################
+println("loading psftpy...")
+psfst = loadpsf_dirty(psf)
+println("loading skytoy...")
 skyst = loadsky_dirty(obj,psfst.mypsf,psfst.nu)
 ##################################
 else
