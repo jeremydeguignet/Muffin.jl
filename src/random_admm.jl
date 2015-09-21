@@ -381,6 +381,11 @@ function permuteX(wlt::Array{Float64,2},taut::Array{Float64,4},t::Array{Float64,
         wlt = myidwt_dirac(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
         b = fty + taup + rhop*p + taus + rhos*s
         wlt_b = wlt + b
+        # figure(1)
+        # imshow(x)
+        # x = imfilter_fft(wlt_b,ifftshift(ifft(psfcbe)),"circular")
+        # figure(2)
+        # figure(1)
         # imshow(x)
         x = real(ifft(psfcbe.*fft(wlt_b)))
         # tmp = copy(x)

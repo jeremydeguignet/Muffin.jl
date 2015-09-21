@@ -19,7 +19,7 @@ module Muffin
     using Images
     using Wavelets
     using GHF
-
+    using PyPlot
 
     export muffin,savedata,muffin_DA,muffin_SA,muffin_random
 

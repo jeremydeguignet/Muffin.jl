@@ -51,7 +51,7 @@ function loadpsf_dirty(psf::ASCIIString)
     psfcube = lecture(psf)
     psfst.nu, psfst.nu0 = cubefreqchiara(size(psfcube)[3])
     psfst.mypsf = cropcubexy(psfcube,size(psfcube)[1])
-    psfst.mypsfadj = flipdim(flipdim(psfst.mypsf,1),2)
+    psfst.mypsfadj = flipdim(flipdim(psfst.mypsf,2),1)
     return psfst
 end
 

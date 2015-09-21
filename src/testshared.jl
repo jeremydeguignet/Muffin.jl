@@ -468,6 +468,12 @@ function loadarray_v2(rhop,rhot,rhov,rhos,μt,μv,mueps,nspat,nfreq,nxy,mydata,m
         admmst.p = zeros(Float64,nxy,nxy,nfreq)
         admmst.x = copy(mydata)
         admmst.fty = cubefilter(mydata,mypsfadj)
+        tmp = copy(admmst.fty)
+        admmst.fty[:,2:end] = tmp[:,1:end-1]
+        admmst.fty[:,1] = tmp[:,end]
+        tmp = copy(admmst.fty)
+        admmst.fty[2:end,:] = tmp[1:end-1,:]
+        admmst.fty[1,:] = tmp[end,:]
 
     admmst.xmm = zeros(Float64,nxy,nxy,nfreq)
     admmst.spectralwlt = zeros(Float64,nxy,nxy,nfreq)
