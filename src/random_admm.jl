@@ -45,10 +45,10 @@ println("MUFFIN initialisation")
                         psf = "/home/jeremy/Bureau/halo_psf.fits"
                         obj = "/home/jeremy/Bureau/halo_dirty.fits"
                      elseif dataobj == "toy"
-                        # psf = "/Users/deguignet/Desktop/toypsf.fits"
-                        # obj = "/Users/deguignet/Desktop/toydirty.fits"
-                        psf = "/home/jeremy/Bureau/toypsf.fits"
-                        obj = "/home/jeremy/Bureau/toydirty.fits"
+                        psf = "/Users/deguignet/Desktop/toypsf.fits"
+                        obj = "/Users/deguignet/Desktop/toydirty.fits"
+                        # psf = "/home/jeremy/Bureau/toypsf.fits"
+                        # obj = "/home/jeremy/Bureau/toydirty.fits"
                      elseif isempty(folder)
                          tmp = pwd()
                          psf = string(tmp,tmp[1],datapsf)
@@ -379,14 +379,29 @@ function permuteX(wlt::Array{Float64,2},taut::Array{Float64,4},t::Array{Float64,
         wlt = myidwt_dirac(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
         b = fty + taup + rhop*p + taus + rhos*s
         wlt_b = wlt + b
+        # imshow(x)
         x = real(ifft(psfcbe.*fft(wlt_b)))
-        #x = imfilter(psfcbe,wlt_b,"circular")
+        # tmp = copy(x)
+        # x[:,2:end] = tmp[:,1:end-1]
+        # x[:,1] = tmp[:,end]
+        # tmp = copy(x)
+        # x[2:end,:] = tmp[1:end-1,:]
+        # x[1,:] = tmp[end,:]
+
     else
         wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
         b = fty + taup + rhop*p + taus + rhos*s
         wlt_b = wlt + b
         x = real(ifft(psfcbe.*fft(wlt_b)))
-        #x = imfilter(psfcbe,wlt_b,"circular")
+        # tmp = copy(x)
+        # x[:,2:end] = tmp[:,1:end-1]
+        # x[:,1] = tmp[:,end]
+        # tmp = copy(x)
+        # x[2:end,:] = tmp[1:end-1,:]
+        # x[1,:] = tmp[end,:]
+        # imshow(x)
+
+
 
     end
     return x
