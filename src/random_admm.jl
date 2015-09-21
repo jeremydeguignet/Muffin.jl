@@ -40,11 +40,15 @@ println("MUFFIN initialisation")
                         # psf = "/home/deguignet/chiara_psf2d.fits"
                         # obj = "/home/deguignet/chiara2d.fits"
                      elseif dataobj == "halo"
-                         psf = "/home/deguignet/simulations/halo/HALO_ONLY_psf.fits"
-                         obj = "/home/deguignet/simulations/halo/HALO_ONLY_dirty.fits"
+                        # psf = "/home/deguignet/simulations/halo/HALO_ONLY_psf.fits"
+                        # obj = "/home/deguignet/simulations/halo/HALO_ONLY_dirty.fits"
+                        psf = "/home/jeremy/Bureau/halo_psf.fits"
+                        obj = "/home/jeremy/Bureau/halo_dirty.fits"
                      elseif dataobj == "toy"
-                         psf = "/Users/deguignet/Desktop/toypsf.fits"
-                         obj = "/Users/deguignet/Desktop/toydirty.fits"
+                        # psf = "/Users/deguignet/Desktop/toypsf.fits"
+                        # obj = "/Users/deguignet/Desktop/toydirty.fits"
+                        psf = "/home/jeremy/Bureau/toypsf.fits"
+                        obj = "/home/jeremy/Bureau/toydirty.fits"
                      elseif isempty(folder)
                          tmp = pwd()
                          psf = string(tmp,tmp[1],datapsf)
@@ -298,6 +302,14 @@ tic()
         admmst.x[:,:,z] = copy(cube3D[z][:,:,1])
         end
 
+        ################## taut ######################
+        @sync begin
+             @parallel for z in 1:nfreq
+                  cube4D[z][:,:,2,:] = calcultaut(cube4D[z][:,:,2,:],cube4D[z][:,:,1,:],rhot,cube3D[z][:,:,1],spatialwlt,μt,nspat)
+              end
+          end
+        ####################################################
+
 
         admmst.tauv = admmst.tauv + rhov*(admmst.v-admmst.sh)
         admmst.taus = admmst.taus + rhos*(admmst.s-admmst.x)
@@ -368,11 +380,14 @@ function permuteX(wlt::Array{Float64,2},taut::Array{Float64,4},t::Array{Float64,
         b = fty + taup + rhop*p + taus + rhos*s
         wlt_b = wlt + b
         x = real(ifft(psfcbe.*fft(wlt_b)))
+        #x = imfilter(psfcbe,wlt_b,"circular")
     else
         wlt = myidwt(wlt, nspat, taut[:,:,1,:], rhot, t[:,:,1,:], spatialwlt)
         b = fty + taup + rhop*p + taus + rhos*s
         wlt_b = wlt + b
         x = real(ifft(psfcbe.*fft(wlt_b)))
+        #x = imfilter(psfcbe,wlt_b,"circular")
+
     end
     return x
 end
@@ -409,5 +424,34 @@ function permuteT(taut::Array{Float64,4}, t::Array{Float64,4}, rhot::Float64, x:
     end
 
     return t
+
+end
+
+
+function calcultaut(taut::Array{Float64,4}, t::Array{Float64,4}, rhot::Float64, x::Array{Float64,2},
+                  spatialwlt, μt::Float64, nspat::Int)
+
+    if spatialwlt[end] == "dirac"
+        for b in 1:nspat-1
+                    hx = dwt(x,wavelet(spatialwlt[b]))
+                    tmp = hx - taut[:,:,1,b]/rhot
+                    t[:,:,1,b] = prox_u(tmp,μt/rhot)
+                    taut[:,:,1,b] = taut[:,:,1,b] + rhot*(t[:,:,1,b]-hx)
+        end
+                    hx = x
+                    tmp = hx - taut[:,:,1,nspat]/rhot
+                    t[:,:,1,nspat] = prox_u(tmp,μt/rhot)
+                    taut[:,:,1,nspat] = taut[:,:,1,nspat] + rhot*(t[:,:,1,nspat]-hx)
+    else
+        for b in 1:nspat
+                    hx = dwt(x,wavelet(spatialwlt[b]))
+                    tmp = hx - taut[:,:,1,b]/rhot
+                    t[:,:,1,b] = prox_u(tmp,μt/rhot)
+                    taut[:,:,1,b] = taut[:,:,1,b] + rhot*(t[:,:,1,b]-hx)
+
+        end
+    end
+
+    return taut
 
 end
