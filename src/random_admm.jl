@@ -47,10 +47,12 @@ println("MUFFIN initialisation")
                         psf = "/home/jeremy/Bureau/halo_psf.fits"
                         obj = "/home/jeremy/Bureau/halo_dirty.fits"
                      elseif dataobj == "toy"
-                        psf = "/Users/deguignet/Desktop/toypsf.fits"
-                        obj = "/Users/deguignet/Desktop/toydirty.fits"
+                        # psf = "/Users/deguignet/Desktop/toypsf.fits"
+                        # obj = "/Users/deguignet/Desktop/toydirty.fits"
                         # psf = "/home/jeremy/Bureau/toypsf.fits"
                         # obj = "/home/jeremy/Bureau/toydirty.fits"
+                        psf = "/home/jeremy/bigpsf.fits"
+                        obj = "/home/jeremy/bigdirty.fits"
                      elseif isempty(folder)
                          tmp = pwd()
                          psf = string(tmp,tmp[1],datapsf)
